@@ -4,9 +4,6 @@ PROJECT_NAME = "2NK_editor"
 V_MAJOR = 1
 V_MINOR = 0
 
-
-#===================================================
-
 import sys, platform
 PLATFORM = sys.platform
 for x in platform.uname():

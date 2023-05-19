@@ -1,14 +1,11 @@
 #dirs
 .vs/
 .vscode/
-bin*/
-logs/
 
 #files
 Makefile
-*.user
-*.xcworkspace/
-*.xcodeproj/
-*.vcxproj
 *.sln
+*.vcxproj
+*.user
+*.pdb
 *.pyc
