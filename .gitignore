@@ -9,6 +9,6 @@ Makefile
 *.user
 *.xcworkspace/
 *.xcodeproj/
-*.vcxproj
+*.vcxproj*
 *.sln
 *.pyc
