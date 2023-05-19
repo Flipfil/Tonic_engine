@@ -1,6 +1,8 @@
 ENGINE_NAME = "2NK"
 PROJECT_NAME = "2NK_editor"
 
+CONFIG="debug"
+
 V_MAJOR = 1
 V_MINOR = 0
 
@@ -12,12 +14,15 @@ PLATFORM = sys.platform
 for x in platform.uname():
     if "linux" in x.lower():
         PLATFORM = "linux"
+        break
 
     if "microsoft" in x.lower() or "windows" in x.lower():
         PLATFORM = "windows"
+        break
 
     if "darwin" in x.lower():
         PLATFORM = "darwin"
+        break
 
 
 def IsWindows():
