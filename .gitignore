@@ -1,19 +1,11 @@
 #dirs
 .vs/
 .vscode/
-build_vs/
-*.dir/
-CMakeFiles/
-.cmake/
-build*/
 
 #files
 Makefile
-*.json
 *.sln
 *.vcxproj
 *.user
-*.filters
 *.pdb
-CMake*
-
+*.pyc

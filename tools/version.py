@@ -1,4 +1,3 @@
-MAJOR = 0
-MINOR = 0
+import globals
 
-print("2NK tools - v{}.{}".format(MAJOR, MINOR));
+print("2NK tools - v{}.{}".format(globals.V_MAJOR, globals.V_MINOR));
