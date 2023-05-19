@@ -18,10 +18,10 @@ for x in platform.uname():
 
 
 def IsWindows():
-    return "windows" in PLATFORM
+    return "windows" == PLATFORM
 
 def IsLinux():
-    return "linux" in PLATFORM
+    return "linux" == PLATFORM
 
 def IsMac():
-    return "darwin" in PLATFORM
+    return "darwin" == PLATFORM
