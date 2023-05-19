@@ -15,5 +15,6 @@ Makefile
 *.user
 *.filters
 *.pdb
+*.pyc
 CMake*
 
