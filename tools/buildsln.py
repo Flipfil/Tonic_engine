@@ -1,15 +1,16 @@
 import subprocess
-import os
+import os, sys
 import globals
+
+# executes makes the binary file
 
 CONFIG = globals.CONFIG
 
-print("Building project..")
-
+ret = 0
 if globals.IsWindows():
     VS_CODE_BUILD_PATH = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe"
-    subprocess.call(["cmd.exe", "/c" , VS_CODE_BUILD_PATH, "{}.sln".format(globals.ENGINE_NAME), "/property:Configuration={}".format(CONFIG)])
+    ret = subprocess.call(["cmd.exe", "/c" , VS_CODE_BUILD_PATH, "{}.sln".format(globals.ENGINE_NAME), "/property:Configuration={}".format(CONFIG)])
 else:
-    subprocess.call(["make", "config={}".format(CONFIG)])
+    ret = subprocess.call(["make", "config={}".format(CONFIG)])
 
-print("done.\n")
+sys.exit(ret)
