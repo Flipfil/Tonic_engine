@@ -4,13 +4,11 @@ import globals
 
 CONFIG = "Debug"
 
+print("Building project..")
+
+if globals.IsWindows():
+    VS_CODE_BUILD_PATH = "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe"
+    subprocess.call(["cmd.exe", "/c" , VS_CODE_BUILD_PATH, "{}.sln".format(globals.ENGINE_NAME), "/property:Configuration={}".format(CONFIG)])
 
 
-print("Debug or release? D/R: ")
-input = input()
-if input in ["r", "R", "Release", "release"]:
-    CONFIG = "Release"
-
-print("Creating project..")
-subprocess.call(["cmake", "-B build/" + CONFIG, "-DMAKE_DEBUG_TYPE=" + CONFIG])
 print("done.\n")
