@@ -2,7 +2,7 @@ import globals
 import subprocess
 
 if globals.IsWindows():
-    subprocess.call(["cmd.exe", "/c", "premake\\premake5", "vs2019"])
+    subprocess.call(["cmd.exe", "/c", "premake\\premake5", "vs2022"])
 
 if globals.IsLinux():
     subprocess.call(["premake/premake5.linux", "gmake2"])
