@@ -11,8 +11,12 @@ workspace "2NK"
 tdir = "bin/%{cfg.buildcfg}/%{prj.name}"
 odir = "bin-obj/%{cfg.buildcfg}/%{prj.name}"
 
+-- External dependencies
+externals = {}
+externals["SDL2"] = "external/SDL2"
+
 project "2NK_engine"
-    location "2NK_enigne"
+    location "2NK_engine"
     kind "StaticLib"
     language "C++"
     cppdialect "C++17"
@@ -30,7 +34,8 @@ project "2NK_engine"
 
     externalincludedirs
     {
-        "%{prj.name}/include/2NK_engine"
+        "%{prj.name}/include/2NK_engine",
+        "%{externals.SDL2}/include"
     }
 
     flags
@@ -116,6 +121,16 @@ project "2NK_editor"
             "_2NK_PLATFORM_WINDOWS"
         }
 
+        libdirs
+        {
+            "%{externals.SDL2}/lib"
+        }
+
+        links
+        {
+            "SDL2"
+        }
+
     filter {"system:macosx", "configurations:*"}
         xcodebuildsettings
         {
@@ -132,6 +147,11 @@ project "2NK_editor"
         defines
         {
             "_2NK_PLATFORM_LINUX"
+        }
+
+        links
+        {
+            "SDL2"
         }
 
     filter {"configurations:debug"}

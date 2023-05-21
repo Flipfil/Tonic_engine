@@ -4,9 +4,9 @@
 int main (int argc, char* argv[])
 {
     std::cout << "Hello" << std::endl;
-    int a = Add(10, 5);
-    int b = Sub(10, 5);
-    std::cout << a << ", " << b << std::endl;
-    GetInfo();
+    tnk::GetInfo();
+
+    tnk::Initialize();
+    tnk::Shutdown();
     return 0;
 }
