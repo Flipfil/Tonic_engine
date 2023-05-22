@@ -14,6 +14,7 @@ odir = "bin-obj/%{cfg.buildcfg}/%{prj.name}"
 -- External dependencies
 externals = {}
 externals["SDL2"] = "external/SDL2"
+externals["spdlog"] = "external/spdlog"
 
 project "2NK_engine"
     location "2NK_engine"
@@ -34,8 +35,7 @@ project "2NK_engine"
 
     externalincludedirs
     {
-        "%{prj.name}/include/2NK_engine",
-        "%{externals.SDL2}/include"
+        "%{prj.name}/include/2NK_engine"
     }
 
     flags
