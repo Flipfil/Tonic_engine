@@ -11,6 +11,11 @@ workspace "2NK"
 tdir = "bin/%{cfg.buildcfg}/%{prj.name}"
 odir = "bin-obj/%{cfg.buildcfg}/%{prj.name}"
 
+-- External dependencies
+externals = {}
+externals["SDL2"] = "external/SDL2"
+externals["spdlog"] = "external/spdlog"
+
 project "2NK_engine"
     location "2NK_enigne"
     kind "StaticLib"
@@ -30,7 +35,9 @@ project "2NK_engine"
 
     externalincludedirs
     {
-        "%{prj.name}/include/2NK_engine"
+        "%{prj.name}/include/2NK_engine",
+        "%{externals.SDL2}/include",
+        "%{externals.spdlog}/include"
     }
 
     flags
