@@ -48,9 +48,12 @@ namespace TNK
         }
        
 
-        if (!rval) Shutdown();
-
-        return is_running = true;
+        if (!rval)
+            Shutdown();
+        else
+            is_running = true;
+      
+        return rval;
     }
 
     //============================================
@@ -71,23 +74,22 @@ namespace TNK
             << "." << (int)version.patch
             << std::endl;
 
-    #ifdef  _2NK_CONFIG_DEBUG
+        #ifdef  _2NK_CONFIG_DEBUG
         std::cout << "Configuration: DEBUG" << std::endl;
-    #endif
-    #ifdef  _2NK_CONFIG_RELEASE
+        #endif
+        #ifdef  _2NK_CONFIG_RELEASE
         std::cout << "Configuration: RELEASE" << std::endl;
-    #endif
-    #ifdef  _2NK_PLATFORM_WINDOWS
+        #endif
+        #ifdef  _2NK_PLATFORM_WINDOWS
         std::cout << "Platform: WINDOWS" << std::endl;
-    #endif
-    #ifdef  _2NK_PLATFORM_MAC
+        #endif
+        #ifdef  _2NK_PLATFORM_MAC
         std::cout << "Platform: MAC" << std::endl;
-    #endif
-    #ifdef  _2NK_PLATFORM_LINUX
+        #endif
+        #ifdef  _2NK_PLATFORM_LINUX
         std::cout << "Platform: LINUX" << std::endl;
-    #endif
+        #endif
     }
-
 
     // Singleton
     //============================================
