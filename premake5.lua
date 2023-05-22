@@ -128,6 +128,8 @@ project "2NK_editor"
             "_2NK_PLATFORM_MAC"
         }
 
+        -- TODO: integrate MacOS SDL2.framework 
+
     filter {"system:linux", "configurations:*"}
         defines
         {
