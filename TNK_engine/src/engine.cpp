@@ -74,19 +74,19 @@ namespace TNK
             << "." << (int)version.patch
             << std::endl;
 
-        #ifdef  _2NK_CONFIG_DEBUG
+        #ifdef TNK_CONFIG_DEBUG
         std::cout << "Configuration: DEBUG" << std::endl;
         #endif
-        #ifdef  _2NK_CONFIG_RELEASE
+        #ifdef TNK_CONFIG_RELEASE
         std::cout << "Configuration: RELEASE" << std::endl;
         #endif
-        #ifdef  _2NK_PLATFORM_WINDOWS
+        #ifdef TNK_PLATFORM_WINDOWS
         std::cout << "Platform: WINDOWS" << std::endl;
         #endif
-        #ifdef  _2NK_PLATFORM_MAC
+        #ifdef TNK_PLATFORM_MAC
         std::cout << "Platform: MAC" << std::endl;
         #endif
-        #ifdef  _2NK_PLATFORM_LINUX
+        #ifdef TNK_PLATFORM_LINUX
         std::cout << "Platform: LINUX" << std::endl;
         #endif
     }

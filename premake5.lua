@@ -1,5 +1,5 @@
-workspace "2NK"
-    startproject "2NK_editor"
+workspace "TNK"
+    startproject "TNK_editor"
     architecture "x64"
 
     configurations
@@ -16,8 +16,8 @@ externals = {}
 externals["SDL2"] = "external/SDL2"
 externals["spdlog"] = "external/spdlog"
 
-project "2NK_engine"
-    location "2NK_engine"
+project "TNK_engine"
+    location "TNK_engine"
     kind "StaticLib"
     language "C++"
     cppdialect "C++17"
@@ -35,7 +35,9 @@ project "2NK_engine"
 
     externalincludedirs
     {
-        "%{prj.name}/include/2NK_engine"
+        "%{prj.name}/include/TNK_engine",
+        "%{externals.SDL2}/include",
+        "%{externals.spdlog}/include"
     }
 
     flags
@@ -48,7 +50,7 @@ project "2NK_engine"
 
         defines
         {
-            "_2NK_PLATFORM_WINDOWS"
+            "TNK_PLATFORM_WINDOWS"
         }
 
     filter {"system:macosx", "configurations:*"}
@@ -60,19 +62,19 @@ project "2NK_engine"
 
         defines
         {
-            "_2NK_PLATFORM_MAC"
+            "TNK_PLATFORM_MAC"
         }
 
     filter {"system:linux", "configurations:*"}
         defines
         {
-            "_2NK_PLATFORM_LINUX"
+            "TNK_PLATFORM_LINUX"
         }
 
     filter {"configurations:debug"}
         defines
         {
-            "_2NK_CONFIG_DEBUG"
+            "TNK_CONFIG_DEBUG"
         }
         runtime "debug"
         symbols "on"
@@ -80,19 +82,19 @@ project "2NK_engine"
     filter {"configurations:release"}
         defines
         {
-            "_2NK_CONFIG_RELEASE"
+            "TNK_CONFIG_RELEASE"
         }
         runtime "release"
         symbols "off"
         optimize "on"
     
-project "2NK_editor"
-    location "2NK_editor"
+project "TNK_editor"
+    location "TNK_editor"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
     staticruntime "on"
-    links "2NK_engine"
+    links "TNK_engine"
 
     targetdir(tdir)
     objdir(odir)
@@ -105,7 +107,7 @@ project "2NK_editor"
 
     externalincludedirs
     {
-        "2NK_engine/include"
+        "TNK_engine/include"
     }
 
     flags
@@ -118,7 +120,7 @@ project "2NK_editor"
 
         defines
         {
-            "_2NK_PLATFORM_WINDOWS"
+            "TNK_PLATFORM_WINDOWS"
         }
 
         libdirs
@@ -140,7 +142,7 @@ project "2NK_editor"
 
         defines
         {
-            "_2NK_PLATFORM_MAC"
+            "TNK_PLATFORM_MAC"
         }
 
         -- TODO: integrate MacOS SDL2.framework 
@@ -148,7 +150,7 @@ project "2NK_editor"
     filter {"system:linux", "configurations:*"}
         defines
         {
-            "_2NK_PLATFORM_LINUX"
+            "TNK_PLATFORM_LINUX"
         }
 
         links
@@ -159,7 +161,7 @@ project "2NK_editor"
     filter {"configurations:debug"}
         defines
         {
-            "_2NK_CONFIG_DEBUG"
+            "TNK_CONFIG_DEBUG"
         }
         runtime "debug"
         symbols "on"
@@ -167,7 +169,7 @@ project "2NK_editor"
     filter {"configurations:release"}
         defines
         {
-            "_2NK_CONFIG_RELEASE"
+            "TNK_CONFIG_RELEASE"
         }
         runtime "release"
         symbols "off"
