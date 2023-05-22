@@ -3,10 +3,11 @@
 
 int main (int argc, char* argv[])
 {
-    std::cout << "Hello" << std::endl;
-    tnk::GetInfo();
+    TNK::Engine& engine = TNK::Engine::GetInstance();
+    engine.Run();
+    
 
-    tnk::Initialize();
-    tnk::Shutdown();
+    std::cout << "Press ENTER to continue...";
+    std::cin.ignore();
     return 0;
 }
