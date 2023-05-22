@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/window.h"
+#include "managers/logmanager.h"
 
 namespace TNK
 {
@@ -15,7 +16,7 @@ namespace TNK
 		static Engine& GetInstance();
 
 		void Run();
-		inline void Quit() { is_running = false; }
+		inline void Quit() { m_is_running = false; }
 
 	private:
 		[[nodiscard]] bool Initialize();
@@ -23,8 +24,12 @@ namespace TNK
 		void GetInfo();
 
 	private:
-		bool is_running;
+		bool m_is_running;
+		bool m_is_initialized;
 		CORE::Window m_window;
+
+		//managers
+		MANAGERS::LogManager m_log_manager;
 
 		//singleton
 		Engine();

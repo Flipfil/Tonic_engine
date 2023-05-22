@@ -1,8 +1,7 @@
 #include "core/window.h"
 #include "SDL.h"
 #include "engine.h"
-
-#include <iostream>
+#include "log.h"
 
 namespace TNK::CORE
 {
@@ -18,7 +17,7 @@ namespace TNK::CORE
 		m_window = SDL_CreateWindow("TNKGame", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, 0);
 		if (!m_window)
 		{
-			std::cout << "Error creating window: " << SDL_GetError() << std::endl;
+			TNK_ERROR("Error creating window: ", SDL_GetError());
 			return false;
 		}
 		return true;

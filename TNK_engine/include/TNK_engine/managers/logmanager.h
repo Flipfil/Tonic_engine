@@ -1,6 +1,5 @@
 #pragma once
 
-
 namespace TNK::MANAGERS
 {
 	class LogManager
