@@ -2,6 +2,7 @@
 
 #include "core/window.h"
 #include "managers/logmanager.h"
+#include "managers/render_manager.h"
 
 namespace TNK
 {
@@ -18,6 +19,9 @@ namespace TNK
 		void Run();
 		inline void Quit() { m_is_running = false; }
 
+		//managers
+		inline MANAGERS::RenderManager& GetRenderManager() { return m_render_manager; }
+
 	private:
 		[[nodiscard]] bool Initialize();
 		void Shutdown();
@@ -30,6 +34,7 @@ namespace TNK
 
 		//managers
 		MANAGERS::LogManager m_log_manager;
+		MANAGERS::RenderManager m_render_manager;
 
 		//singleton
 		Engine();

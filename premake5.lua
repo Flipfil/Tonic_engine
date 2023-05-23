@@ -13,8 +13,12 @@ odir = "bin-obj/%{cfg.buildcfg}/%{prj.name}"
 
 -- External dependencies
 externals = {}
-externals["SDL2"] = "external/SDL2"
+externals["SDL2"]   = "external/SDL2"
 externals["spdlog"] = "external/spdlog"
+externals["GLAD"]   = "external/GLAD"
+
+-- Process GLAD before anything else
+include "external/GLAD"
 
 project "TNK_engine"
     location "TNK_engine"
@@ -37,12 +41,18 @@ project "TNK_engine"
     {
         "%{prj.name}/include/TNK_engine",
         "%{externals.SDL2}/include",
-        "%{externals.spdlog}/include"
+        "%{externals.spdlog}/include",
+        "%{externals.GLAD}/include"
     }
 
     flags
     {
         "FatalWarnings"
+    }
+
+    defines
+    {
+        "GLFW_INCLUDE_NONE" -- Ensures glad does not include glfw
     }
 
     filter {"system:windows", "configurations:*"}
@@ -130,7 +140,8 @@ project "TNK_editor"
 
         links
         {
-            "SDL2"
+            "SDL2",
+            "GLAD"
         }
 
     filter {"system:macosx", "configurations:*"}
@@ -145,7 +156,20 @@ project "TNK_editor"
             "TNK_PLATFORM_MAC"
         }
 
-        -- TODO: integrate MacOS SDL2.framework 
+        -- TODO: integrate MacOS SDL2.framework
+        -- vvvvvvvvv
+
+        -- abspath = path.getabsolute("%{externals.maclibs}")
+        -- linkoptions {"-F " .. abspath}
+
+        --links
+        --{
+        --    "SDL2.framework",
+        --    "GLAD"
+        --}
+
+        -- ^^^^^^^^^
+
 
     filter {"system:linux", "configurations:*"}
         defines
@@ -155,7 +179,8 @@ project "TNK_editor"
 
         links
         {
-            "SDL2"
+            "SDL2",
+            "GLAD"
         }
 
     filter {"configurations:debug"}
