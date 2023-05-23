@@ -1,6 +1,7 @@
 #pragma once
 
 struct SDL_Window;
+using SDL_GLContext = void*;
 namespace TNK::CORE
 {
 	class Window
@@ -13,7 +14,11 @@ namespace TNK::CORE
 		void Shutdown();
 		void PumpEvents();
 
+		void BeginRender();
+		void EndRender();
+
 	private:
-		SDL_Window* m_window;
+		SDL_Window* m_SDL_window;
+		SDL_GLContext m_GL_context;
 	};
 }

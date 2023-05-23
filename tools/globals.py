@@ -1,5 +1,5 @@
-ENGINE_NAME = "2NK"
-PROJECT_NAME = "2NK_editor"
+ENGINE_NAME = "TNK"
+PROJECT_NAME = "TNK_editor"
 
 CONFIG="debug"
 
