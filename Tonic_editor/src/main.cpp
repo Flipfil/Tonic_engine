@@ -13,6 +13,9 @@
 #include "tonic/main.h"
 
 #include "external/imgui/imgui.h"
+#include "external/glm/glm.hpp"
+#include "external/glm/gtc/type_ptr.hpp"
+#include "external/glm/gtc/matrix_transform.hpp"
 #include <iostream>
 
 
@@ -30,6 +33,8 @@ private:
     float x_key_offset = 0.f;
     float y_key_offset = 0.f;
     float key_speed = 0.001f;
+
+    glm::vec2 m_rect_pos, m_rect_size;
     
 
 public:
@@ -70,10 +75,11 @@ public:
                 layout (location = 0) in vec3 position;
                 out vec3 vpos;
                 uniform vec2 offset = vec2(0.5);
+                uniform mat4 model = mat4(1.0);
                 void main()
                 {
                     vpos = position + vec3(offset, 0);
-                    gl_Position = vec4(position, 1.0);
+                    gl_Position = model * vec4(position, 1.0);
                 }
             )";
 
@@ -92,6 +98,8 @@ public:
         m_shader = std::make_shared<graphics::Shader>(vertex_shader, fragment_shader);
         m_shader->SetUniformFloat3("color", 1, 0, 0);
         
+        m_rect_pos = glm::vec2(0.f);
+        m_rect_size = glm::vec2(1.f);
     }
 
     void Shutdown() override
@@ -101,13 +109,10 @@ public:
 
     void Update() override
     {
-        int window_w = 0;
-        int window_h = 0;
+        auto window_size = Engine::GetInstance().GetWindow().GetSize();
 
-        Engine::GetInstance().GetWindow().GetSize(window_w, window_h);
-
-        float x_norm = (float)input::Mouse::X() / window_w;
-        float y_norm = (float)(window_h - input::Mouse::Y()) / window_h;
+        float x_norm = (float)input::Mouse::X() / window_size.x;
+        float y_norm = (float)(window_size.y - input::Mouse::Y()) / window_size.y;
 
         if (input::Keyboard::KeyHeld(TONIC_KEY_LEFT))  x_key_offset -= key_speed;
         if (input::Keyboard::KeyHeld(TONIC_KEY_RIGHT)) x_key_offset += key_speed;
@@ -118,6 +123,12 @@ public:
         if (input::Keyboard::KeyPressed(TONIC_KEY_RIGHT)) x_key_offset += key_speed * 100;
 
         m_shader->SetUniformFloat2("offset", x_norm + x_key_offset, y_norm + y_key_offset);
+       
+        glm::mat4 model = glm::mat4(1.f);
+        model = glm::translate(model, {m_rect_pos.x, m_rect_pos.y, 0.f});
+        model = glm::scale(model, { m_rect_size.x, m_rect_size.y, 0.f });
+
+        m_shader->SetUniformMat4("model", model);
     }
 
     void Render() override
@@ -133,15 +144,15 @@ public:
     {
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
-        if (ImGui::Begin("Rect Pos X"))
+        if (ImGui::Begin("Rect Pos"))
         {
-            ImGui::DragFloat("Rect Pos X", &x_key_offset, 0.1f);
+            ImGui::DragFloat2("Rect Pos",glm::value_ptr(m_rect_pos), 0.01f);
         } 
         ImGui::End();
 
-        if (ImGui::Begin("Rect Pos Y"))
+        if (ImGui::Begin("Rect Size"))
         {
-            ImGui::DragFloat("Rect Pos Y", &y_key_offset, 0.1f);
+            ImGui::DragFloat2("Rect Size", glm::value_ptr(m_rect_size), 0.01f);
         }
         ImGui::End();
 

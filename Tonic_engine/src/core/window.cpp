@@ -25,9 +25,10 @@ namespace tonic::core
 		width_min = 320;
 		height_min = 180;
 		flags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
-		clear_color_R = 0x10 / (float)0xFF;
-		clear_color_G = 0x1D / (float)0xFF;
-		clear_color_B = 0x6B / (float)0xFF;
+		clear_color = glm::vec3( 
+			0x10 / (float)0xFF, 
+			0x1D / (float)0xFF, 
+			0x6B / (float)0xFF);
 	}
 
 	Window::Window() : m_SDL_window(nullptr), m_GL_context(nullptr) {}
@@ -68,7 +69,8 @@ namespace tonic::core
 		gladLoadGLLoader(SDL_GL_GetProcAddress);
 
 		m_frame_buffer = std::make_shared<graphics::FrameBuffer>(props.width, props.height);
-		m_frame_buffer->SetClearColor(props.clear_color_R, props.clear_color_G, props.clear_color_B, 1.f);
+		glm::vec4 cc = { props.clear_color.r, props.clear_color.g, props.clear_color.b, 1.f };
+		m_frame_buffer->SetClearColor(cc);
 
 		m_imgui_window.Create(props.imgui_props);
 		return true;
@@ -134,8 +136,10 @@ namespace tonic::core
 		SDL_GL_SwapWindow(m_SDL_window);
 	}
 
-	void Window::GetSize(int& w, int& h)
+	glm::ivec2 Window::GetSize()
 	{
+		int w, h;
 		SDL_GetWindowSize(m_SDL_window, &w, &h);
+		return glm::ivec2(w, h);
 	}
 }

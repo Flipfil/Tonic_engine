@@ -2,6 +2,8 @@
 
 #include "tonic/graphics/render_commands.h"
 
+#include "external/glm/glm.hpp"
+
 #include <memory>
 #include <queue>
 #include <stack>
@@ -24,8 +26,8 @@ namespace tonic::managers
 
 
 		void Clear();
-		void SetClearColor(float r, float g, float b, float alpha);
-		void SetViewPort(int x, int y, int w, int h);
+		void SetClearColor(const glm::vec4 clear_color);
+		void SetViewPort(const glm::ivec4 dimensions);
 		void Submit(std::unique_ptr<graphics::RENDER_COMMANDS::RenderCommand> rc);
 
 		//Exexute subitted RenderCoins in the order they were recieved.

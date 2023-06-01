@@ -2,6 +2,8 @@
 
 #include "imgui_window.h"
 
+#include "external/glm/glm.hpp"
+
 #include <string>
 #include <memory>
 
@@ -22,7 +24,7 @@ namespace tonic::core
 		int width, height;
 		int width_min, height_min;
 		int flags;
-		float clear_color_R, clear_color_G, clear_color_B;
+		glm::vec3 clear_color;
 		ImguiWindowProperties imgui_props;
 
 		WindowProperties();
@@ -45,7 +47,7 @@ namespace tonic::core
 		inline SDL_GLContext& GetGLContext() { return m_GL_context; }
 		inline graphics::FrameBuffer* GetFrameBuffer() { return m_frame_buffer.get(); }
 
-		void GetSize(int& w, int& h);
+		glm::ivec2 GetSize();
 
 	private:
 		SDL_Window* m_SDL_window;
