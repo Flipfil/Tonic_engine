@@ -1,5 +1,5 @@
-workspace "TNK"
-    startproject "TNK_editor"
+workspace "TONIC"
+    startproject "Tonic_editor"
     architecture "x64"
 
     configurations
@@ -20,8 +20,8 @@ externals["GLAD"]   = "external/GLAD"
 -- Process GLAD before anything else
 include "external/GLAD"
 
-project "TNK_engine"
-    location "TNK_engine"
+project "Tonic_engine"
+    location "Tonic_engine"
     kind "StaticLib"
     language "C++"
     cppdialect "C++17"
@@ -33,13 +33,16 @@ project "TNK_engine"
     files
     {
         "%{prj.name}/include/**.h",
+        "%{prj.name}/include/**.hpp",
+        "%{prj.name}/include/**.cpp",
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp"
+        "%{prj.name}/src/**.cpp",
+        "%{prj.name}/**.natvis"
     }
 
     externalincludedirs
     {
-        "%{prj.name}/include/TNK_engine",
+        "%{prj.name}/include",
         "%{externals.SDL2}/include",
         "%{externals.spdlog}/include",
         "%{externals.GLAD}/include"
@@ -60,7 +63,7 @@ project "TNK_engine"
 
         defines
         {
-            "TNK_PLATFORM_WINDOWS"
+            "TONIC_PLATFORM_WINDOWS"
         }
 
     filter {"system:macosx", "configurations:*"}
@@ -72,19 +75,19 @@ project "TNK_engine"
 
         defines
         {
-            "TNK_PLATFORM_MAC"
+            "TONIC_PLATFORM_MAC"
         }
 
     filter {"system:linux", "configurations:*"}
         defines
         {
-            "TNK_PLATFORM_LINUX"
+            "TONIC_PLATFORM_LINUX"
         }
 
     filter {"configurations:debug"}
         defines
         {
-            "TNK_CONFIG_DEBUG"
+            "TONIC_CONFIG_DEBUG"
         }
         runtime "debug"
         symbols "on"
@@ -92,19 +95,19 @@ project "TNK_engine"
     filter {"configurations:release"}
         defines
         {
-            "TNK_CONFIG_RELEASE"
+            "TONIC_CONFIG_RELEASE"
         }
         runtime "release"
         symbols "off"
         optimize "on"
     
-project "TNK_editor"
-    location "TNK_editor"
+project "Tonic_editor"
+    location "Tonic_editor"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
     staticruntime "on"
-    links "TNK_engine"
+    links "Tonic_engine"
 
     targetdir(tdir)
     objdir(odir)
@@ -117,7 +120,8 @@ project "TNK_editor"
 
     externalincludedirs
     {
-        "TNK_engine/include"
+        "Tonic_engine/include",
+        "%{externals.spdlog}/include"
     }
 
     flags
@@ -130,7 +134,7 @@ project "TNK_editor"
 
         defines
         {
-            "TNK_PLATFORM_WINDOWS"
+            "TONIC_PLATFORM_WINDOWS"
         }
 
         libdirs
@@ -153,12 +157,11 @@ project "TNK_editor"
 
         defines
         {
-            "TNK_PLATFORM_MAC"
+            "TONIC_PLATFORM_MAC"
         }
 
         -- TODO: integrate MacOS SDL2.framework
-        -- vvvvvvvvv
-
+        -- >>>>>>>>>>>>>>>>>
         -- abspath = path.getabsolute("%{externals.maclibs}")
         -- linkoptions {"-F " .. abspath}
 
@@ -167,14 +170,13 @@ project "TNK_editor"
         --    "SDL2.framework",
         --    "GLAD"
         --}
-
-        -- ^^^^^^^^^
+        -- <<<<<<<<<<<<<<<<<<
 
 
     filter {"system:linux", "configurations:*"}
         defines
         {
-            "TNK_PLATFORM_LINUX"
+            "TONIC_PLATFORM_LINUX"
         }
 
         links
@@ -186,7 +188,7 @@ project "TNK_editor"
     filter {"configurations:debug"}
         defines
         {
-            "TNK_CONFIG_DEBUG"
+            "TONIC_CONFIG_DEBUG"
         }
         runtime "debug"
         symbols "on"
@@ -194,7 +196,7 @@ project "TNK_editor"
     filter {"configurations:release"}
         defines
         {
-            "TNK_CONFIG_RELEASE"
+            "TONIC_CONFIG_RELEASE"
         }
         runtime "release"
         symbols "off"
