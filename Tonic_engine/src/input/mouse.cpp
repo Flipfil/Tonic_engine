@@ -16,7 +16,7 @@ namespace tonic::input
 
 
 	//public
-	bool tonic::input::Mouse::ButtonHeld(int button)
+	bool tonic::input::Mouse::HoldingButton(int button)
 	{
 		TONIC_ASSERT(button >= TONIC_M_BUTTON_FIRST && button <= TONIC_M_BUTTON_LAST, "Invalid mouse button.");
 		if (button >= TONIC_M_BUTTON_FIRST && button <= TONIC_M_BUTTON_LAST)
@@ -24,7 +24,7 @@ namespace tonic::input
 
 		return false;
 	}
-	bool tonic::input::Mouse::ButtonPressed(int button)
+	bool tonic::input::Mouse::PressedButton(int button)
 	{
 		TONIC_ASSERT(button >= TONIC_M_BUTTON_FIRST && button <= TONIC_M_BUTTON_LAST, "Invalid mouse button.");
 		if (button >= TONIC_M_BUTTON_FIRST && button <= TONIC_M_BUTTON_LAST)
@@ -32,7 +32,7 @@ namespace tonic::input
 
 		return false;
 	}
-	bool tonic::input::Mouse::ButtonReleased(int button)
+	bool tonic::input::Mouse::ReleasedButton(int button)
 	{
 		TONIC_ASSERT(button >= TONIC_M_BUTTON_FIRST && button <= TONIC_M_BUTTON_LAST, "Invalid mouse button.");
 		if (button >= TONIC_M_BUTTON_FIRST && button <= TONIC_M_BUTTON_LAST)

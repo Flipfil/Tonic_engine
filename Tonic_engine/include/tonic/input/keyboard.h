@@ -10,9 +10,10 @@ namespace tonic::input
 		static void Initialize();
 		static void Update();
 
-		static bool KeyHeld(int button);
-        static bool KeyPressed(int button);
-        static bool KeyReleased(int button);
+        static bool PressedAnyKey();
+		static bool HoldingKey(int button);
+        static bool PressedKey(int button);
+        static bool ReleasedKey(int button);
 
 	private:
 

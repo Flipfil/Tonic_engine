@@ -92,7 +92,7 @@ namespace tonic::input
 		return available_controllers.count(controller_id) > 0;
 	}
 
-	bool Controller::ButtonHeld(int controller_id, Button button)
+	bool Controller::HoldingButton(int controller_id, Button button)
 	{
 		auto it = available_controllers.find(controller_id);
 		if (it == available_controllers.end())
@@ -104,7 +104,7 @@ namespace tonic::input
 		return it->second->buttons_down[static_cast<int>(button)];
 	}
 
-	bool Controller::ButtonPressed(int controller_id, Button button)
+	bool Controller::PressedButton(int controller_id, Button button)
 	{
 		auto it = available_controllers.find(controller_id);
 		if (it == available_controllers.end())
@@ -116,7 +116,7 @@ namespace tonic::input
 		return it->second->buttons_down[static_cast<int>(button)] && !it->second->buttons_down_last[static_cast<int>(button)];
 	}
 
-	bool Controller::ButtonReleased(int controller_id, Button button)
+	bool Controller::ReleasedButton(int controller_id, Button button)
 	{
 		auto it = available_controllers.find(controller_id);
 		if (it == available_controllers.end())

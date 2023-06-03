@@ -7,8 +7,8 @@ namespace tonic::graphics
 	class Mesh
 	{
 	public:
-		Mesh(float* vertex_array, uint32_t vertex_count, uint32_t diensions);
-		Mesh(float* vertex_array, uint32_t vertex_count, uint32_t diensions, 
+		Mesh(float* vertex_array, uint32_t vertex_count, uint32_t dimensions);
+		Mesh(float* vertex_array, uint32_t vertex_count, uint32_t dimensions, 
 								  uint32_t* element_arr, uint32_t element_count);
 
 		~Mesh();

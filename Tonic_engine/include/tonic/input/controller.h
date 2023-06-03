@@ -39,9 +39,9 @@ namespace tonic::input
 
 		static bool IsControllerAvailable(int controller_id);
 
-		static bool ButtonHeld(int controller_id, Button button);
-		static bool ButtonPressed(int controller_id, Button button);
-		static bool ButtonReleased(int controller_id, Button button);
+		static bool HoldingButton(int controller_id, Button button);
+		static bool PressedButton(int controller_id, Button button);
+		static bool ReleasedButton(int controller_id, Button button);
 		
 		static float GetRawAxis(int controller_id, Axis axis);
 		static float GetAxis(int controller_id, Axis axis);
