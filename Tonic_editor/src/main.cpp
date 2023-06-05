@@ -39,9 +39,9 @@ private:
     float y_key_offset = 0.f;
     float key_speed = 0.001f;
 
-    glm::vec2 m_rect_pos, m_rect_size;
-    glm::vec2 m_rect_pos2, m_rect_size2;
-    glm::vec2 m_rect_pos3, m_rect_size3;
+    glm::vec3 m_rect_pos, m_rect_size;
+    glm::vec3 m_rect_pos2, m_rect_size2;
+    glm::vec3 m_rect_pos3, m_rect_size3;
 
     glm::vec3 m_rect_rotation;
     glm::vec3 m_rect_rotation2;
@@ -115,13 +115,13 @@ public:
 
         m_shader->SetUniformFloat3("color", 1, 0, 0);
         
-        m_rect_pos = glm::vec2(0.f);
-        m_rect_pos2 = glm::vec2(0.f);
-        m_rect_pos3 = glm::vec2(0.f);
+        m_rect_pos  = glm::vec3(0.f);
+        m_rect_pos2 = glm::vec3(0.f);
+        m_rect_pos3 = glm::vec3(0.f);
 
-        m_rect_size = glm::vec2(1.f);
-        m_rect_size2 = glm::vec2(1.f);
-        m_rect_size3 = glm::vec2(1.f);
+        m_rect_size  = glm::vec3(1.f);
+        m_rect_size2 = glm::vec3(1.f);
+        m_rect_size3 = glm::vec3(1.f);
 
         m_rect_rotation = glm::vec3(0.f);
         m_rect_rotation2 = glm::vec3(0.f);
@@ -143,30 +143,30 @@ public:
         m_shader->SetUniformFloat2("offset", x_norm + x_key_offset, y_norm + y_key_offset);
        
         glm::mat4 model = glm::mat4(1.f);
-        model = glm::translate(model, {m_rect_pos.x, m_rect_pos.y, 0.f});
+        model = glm::translate(model, {m_rect_pos.x, m_rect_pos.y, m_rect_pos.z});
         model = glm::rotate(model, m_rect_rotation.x, {1,0,0});
         model = glm::rotate(model, m_rect_rotation.y, {0,1,0});
         model = glm::rotate(model, m_rect_rotation.z, {0,0,1});
-        model = glm::scale(model, { m_rect_size.x, m_rect_size.y, 0.f });
+        model = glm::scale(model, { m_rect_size.x, m_rect_size.y, m_rect_size.z });
 
         m_shader->SetUniformMat4("model", model);
 
         glm::mat4 model2 = glm::mat4(1.f);
-        model2 = glm::translate(model2, { m_rect_pos2.x, m_rect_pos2.y, 0.f });
+        model2 = glm::translate(model2, { m_rect_pos2.x, m_rect_pos2.y, m_rect_pos2.z });
         model2 = glm::rotate   (model2, m_rect_rotation2.x, { 1,0,0 });
         model2 = glm::rotate   (model2, m_rect_rotation2.y, { 0,1,0 });
         model2 = glm::rotate   (model2, m_rect_rotation2.z, { 0,0,1 });
-        model2 = glm::scale    (model2, { m_rect_size2.x, m_rect_size2.y, 0.f });
+        model2 = glm::scale    (model2, { m_rect_size2.x, m_rect_size2.y, m_rect_size3.z});
 
         m_shader2->SetUniformMat4("model", model2);
 
 
         glm::mat4 model3 = glm::mat4(1.f);
-        model3 = glm::translate(model3, { m_rect_pos3.x, m_rect_pos3.y, 0.f });
+        model3 = glm::translate(model3, { m_rect_pos3.x, m_rect_pos3.y, m_rect_pos3.z });
         model3 = glm::rotate   (model3, m_rect_rotation3.x, { 1,0,0 });
         model3 = glm::rotate   (model3, m_rect_rotation3.y, { 0,1,0 });
         model3 = glm::rotate   (model3, m_rect_rotation3.z, { 0,0,1 });
-        model3 = glm::scale    (model3, { m_rect_size3.x, m_rect_size3.y, 0.f });
+        model3 = glm::scale    (model3, { m_rect_size3.x, m_rect_size3.y, m_rect_size3.z });
 
         m_shader3->SetUniformMat4("model", model3);
 
@@ -194,18 +194,18 @@ public:
 
         if (ImGui::Begin("Rect Pos"))
         {
-            ImGui::DragFloat2("Rect1",glm::value_ptr(m_rect_pos), 0.01f);
-            ImGui::DragFloat2("Rect2", glm::value_ptr(m_rect_pos2), 0.01f);
-            ImGui::DragFloat2("Rect3", glm::value_ptr(m_rect_pos3), 0.01f);
+            ImGui::DragFloat3("Rect1",glm::value_ptr(m_rect_pos), 0.01f);
+            ImGui::DragFloat3("Rect2", glm::value_ptr(m_rect_pos2), 0.01f);
+            ImGui::DragFloat3("Rect3", glm::value_ptr(m_rect_pos3), 0.01f);
 
         } 
         ImGui::End();
 
         if (ImGui::Begin("Rect Size"))
         {
-            ImGui::DragFloat2("Rect1", glm::value_ptr(m_rect_size), 0.01f);
-            ImGui::DragFloat2("Rect2", glm::value_ptr(m_rect_size2), 0.01f);
-            ImGui::DragFloat2("Rect3", glm::value_ptr(m_rect_size3), 0.01f);
+            ImGui::DragFloat3("Rect1", glm::value_ptr(m_rect_size), 0.01f);
+            ImGui::DragFloat3("Rect2", glm::value_ptr(m_rect_size2), 0.01f);
+            ImGui::DragFloat3("Rect3", glm::value_ptr(m_rect_size3), 0.01f);
 
         }
         ImGui::End();

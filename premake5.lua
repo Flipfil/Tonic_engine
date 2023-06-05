@@ -129,6 +129,11 @@ project "Pong"
         "FatalWarnings"
     }
 
+    postbuildcommands
+    {
+        "python3 " .. path.getabsolute("%{prj.name}") .. "/post_build.py config=%{cfg.buildcfg} prj=%{prj.name}"
+    }
+
     filter {"system:windows", "configurations:*"}
         systemversion "latest"
 
@@ -202,16 +207,16 @@ project "Pong"
         symbols "off"
         optimize "on"
 
-        project "Tonic_editor"
-        location "Tonic_editor"
-        kind "ConsoleApp"
-        language "C++"
-        cppdialect "C++17"
-        staticruntime "on"
-        links "Tonic_engine"
+project "Tonic_editor"
+    location "Tonic_editor"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
+    links "Tonic_engine"
     
-        targetdir(tdir)
-        objdir(odir)
+    targetdir(tdir)
+    objdir(odir)
     
         files
         {
@@ -229,7 +234,12 @@ project "Pong"
         {
             "FatalWarnings"
         }
-    
+        
+        postbuildcommands
+        {
+            "python3 " .. path.getabsolute("%{prj.name}") .. "/post_build.py config=%{cfg.buildcfg} prj=%{prj.name}"
+        }
+
         filter {"system:windows", "configurations:*"}
             systemversion "latest"
     

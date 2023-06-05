@@ -1,3 +1,6 @@
 import globals
+import sys
 
-print("2NK tools - v{}.{}".format(globals.V_MAJOR, globals.V_MINOR));
+print("Tonic tools - v{}.{}".format(globals.V_MAJOR, globals.V_MINOR))
+if len(sys.argv) >= 2:
+    print(", ".join(sys.argv))

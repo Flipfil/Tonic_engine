@@ -122,7 +122,7 @@ namespace tonic
             TONIC_DEBUG("Configuration: DEBUG");
         #endif
         #ifdef TONIC_CONFIG_RELEASE
-            TONIC_DEBUG("Configuration: RELEASE")
+            TONIC_DEBUG("Configuration: RELEASE");
         #endif
         #ifdef TONIC_PLATFORM_WINDOWS
             TONIC_WARN("Platform: WINDOWS");

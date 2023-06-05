@@ -3,10 +3,14 @@ import os, sys, subprocess
 
 # run the executable
 
-CONFIG = "Debug"
-EXE_PATH = "{}/bin/{}/{}/".format(os.getcwd(), CONFIG, globals.PROJECT_NAME)
+args = globals.ProcessArguments(sys.argv)
+config  = globals.GetArgumentValue(args, "config", "debug")
+prj = globals.GetArgumentValue(args, "prj", globals.PROJECT_NAME)
+EXE_PATH = "{}/bin/{}/{}/".format(os.getcwd(), config, prj)
+
+print("EXE_PATH: " + EXE_PATH)
 
 ret = 0
-ret = subprocess.call(["{}{}{}".format(EXE_PATH, globals.PROJECT_NAME, ".exe" if globals.IsWindows() else "")], cwd=os.getcwd())
+ret = subprocess.call(["{}{}{}".format(EXE_PATH, prj, ".exe" if globals.IsWindows() else "")], cwd=os.getcwd())
 
 sys.exit(ret)

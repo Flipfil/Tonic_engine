@@ -16,8 +16,8 @@
 
 	#define TONIC_TRACE(...)	(void)0
 	#define TONIC_DEBUG(...)	(void)0
-	#define TONIC_INFO(...)	(void)0
-	#define TONIC_WARN(...)	(void)0
+	#define TONIC_INFO(...)		(void)0
+	#define TONIC_WARN(...)		(void)0
 	#define TONIC_ERROR(...)	(void)0
 	#define TONIC_FATAL(...)	(void)0
 

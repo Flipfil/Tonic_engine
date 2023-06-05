@@ -3,8 +3,9 @@ import os, sys
 import globals
 
 # executes makes the binary file
-
-CONFIG = globals.CONFIG
+args = globals.ProcessArguments(sys.argv)
+CONFIG = globals.GetArgumentValue(args, "config", "debug")
+print("Building config: " + CONFIG)
 
 ret = 0
 if globals.IsWindows():

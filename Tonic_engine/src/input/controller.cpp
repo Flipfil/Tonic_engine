@@ -79,7 +79,8 @@ namespace tonic::input
 
 	void Controller::Shutdown()
 	{
-		for (auto it = available_controllers.begin(); it != available_controllers.end();)
+		auto it = available_controllers.begin();
+		while (!available_controllers.empty())
 		{
 			ControllerStruct* c = it->second.get();
 			SDL_GameControllerClose(c->gc);
