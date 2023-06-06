@@ -1,12 +1,12 @@
 #include "tonic/graphics/render_commands.h"
 
 #include "tonic/graphics/mesh.h"
+#include "tonic/graphics/texture.h"
 #include "tonic/graphics/shader.h"
 #include "tonic/graphics/frame_buffer.h"
 #include "tonic/graphics/helpers.h"
 
 #include "tonic/engine.h"
-
 #include "tonic/log.h"
 
 #include "glad/glad.h"
@@ -33,6 +33,37 @@ namespace tonic::graphics::RENDER_COMMANDS
 
 
 			shader->Unbind();
+			mesh->Unbind();
+		}
+		else
+		{
+			TONIC_WARN("Attempting to execute RenderMesh with invalid data");
+		}
+	}
+
+	void RenderMeshTextured::Execute()
+	{
+		std::shared_ptr<Mesh> mesh = m_mesh.lock();
+		std::shared_ptr<Texture> texture = m_texture.lock();
+		std::shared_ptr<Shader> shader = m_shader.lock();
+		if (mesh && texture && shader)
+		{
+			mesh->Bind();
+			texture->Bind();
+			shader->Bind();
+
+			if (mesh->GetElementCount() > 0)
+			{
+				glDrawElements(GL_TRIANGLES, mesh->GetElementCount(), GL_UNSIGNED_INT, 0); TONIC_CHECK_GL_ERROR;
+			}
+			else
+			{
+				glDrawArrays(GL_TRIANGLE_STRIP, 0, mesh->GetVertexCount()); TONIC_CHECK_GL_ERROR;
+			}
+
+
+			shader->Unbind();
+			texture->Unbind();
 			mesh->Unbind();
 		}
 		else

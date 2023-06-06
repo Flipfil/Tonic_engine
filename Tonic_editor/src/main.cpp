@@ -9,6 +9,9 @@
 #include "tonic/graphics/mesh.h"
 #include "tonic/graphics/shader.h"
 #include "tonic/graphics/frame_buffer.h"
+#include "tonic/graphics/texture.h"
+
+#include "tonic/assets/assets.h"
 
 #include "tonic/main.h"
 
@@ -21,34 +24,128 @@
 
 using namespace tonic;
 
+class Object
+{
+public:
+    enum class State
+    {
+        Active,
+        NotActive
+    };
+
+    Object()
+        : m_name("")
+        , m_mesh(nullptr)
+        , m_shader(nullptr)
+        , m_position(glm::vec3(0.f))
+        , m_size(glm::vec3(1.f))
+        , m_rotation(glm::vec3(0.f))
+        , m_rotation_momentum(glm::vec3(0.f))
+        , m_drag(0.95f)
+        , m_state(State::NotActive)
+    {
+    }
+
+    Object(const std::string& name, std::shared_ptr<graphics::Mesh> mesh, std::shared_ptr<graphics::Shader> shader)
+        : Object()
+    {
+        m_name = name;
+        m_mesh = mesh;
+        m_shader = shader;
+    }
+    ~Object() {}
+
+    void Rotate(const glm::vec3& by) { m_rotation += by; }
+    void Move(const glm::vec3& by)   { m_position += by; }
+    void Scale(const glm::vec3& by)  { m_size     += by; }
+
+    void SetRotationMomentum(const glm::vec3& rm) { m_rotation_momentum = rm; }
+    void SetDrag(float drag) { m_drag = drag; }
+
+    const glm::vec3& Position() { return m_position; }
+    const glm::vec3& Size()     { return m_size; }
+    const glm::vec3& Rotation() { return m_rotation; }
+    const float      Drag()     { return m_drag; }
+
+    void SetState(State state) { m_state = state; }
+    State GetState() { return m_state; }
+
+    virtual void Render()
+    {
+        if (m_state != State::Active)
+            return;
+        
+        auto rc = std::make_unique<graphics::RENDER_COMMANDS::RenderMesh>(m_mesh, m_shader);
+        Engine::GetInstance().GetRenderManager().Submit(std::move(rc));
+    }
+
+    virtual void Update()
+    {
+        if (m_state != State::Active)
+            return;
+        
+        m_rotation += m_rotation_momentum;
+        m_rotation_momentum *= m_drag;
+        if (glm::length(m_rotation_momentum) < 0.01f)
+            m_rotation_momentum = glm::vec3(0.f);
+
+        glm::mat4 model = glm::mat4(1.f);
+        model = glm::translate(model, m_position);
+        model = glm::rotate(model, m_rotation.x, { 1,0,0 });
+        model = glm::rotate(model, m_rotation.y, { 0,1,0 });
+        model = glm::rotate(model, m_rotation.z, { 0,0,1 });
+        model = glm::scale(model, m_size);
+
+        m_shader->SetUniformMat4("model", model);
+    }
+
+    virtual void ImguiRender()
+    {
+        if (ImGui::Begin(m_name.c_str()))
+        {
+            ImGui::DragFloat3("Position", glm::value_ptr(m_position), 0.01f);
+            ImGui::DragFloat3("Size", glm::value_ptr(m_size), 0.01f);
+            ImGui::DragFloat3("Rotation", glm::value_ptr(m_rotation), 0.01f);
+            ImGui::DragFloat("Drag", &m_drag, 0.001f);
+            if (m_state == State::Active)
+            {
+                if (ImGui::Button("Deactivate"))
+                    m_state = State::NotActive;
+            }
+            else
+            {
+                if (ImGui::Button("Activate"))
+                    m_state = State::Active;
+            }
+        } 
+        ImGui::End();
+    }
+private:
+    std::string m_name;
+
+    std::shared_ptr<graphics::Mesh> m_mesh;
+    std::shared_ptr<graphics::Shader> m_shader;
+    std::shared_ptr<graphics::Texture> m_texture;
+
+    glm::vec3 m_position;
+    glm::vec3 m_size;
+    glm::vec3 m_rotation;
+    glm::vec3 m_rotation_momentum;
+
+    float m_drag;
+
+    State m_state;
+};
+
 class Editor : public App
 {
 private:
     
-    std::shared_ptr<graphics::Mesh>   m_mesh;
-    std::shared_ptr<graphics::Mesh>   m_mesh2;
-    std::shared_ptr<graphics::Mesh>   m_mesh3;
-
-
-    std::shared_ptr<graphics::Shader> m_shader;
-    std::shared_ptr<graphics::Shader> m_shader2;
-    std::shared_ptr<graphics::Shader> m_shader3;
-
-
-    float x_key_offset = 0.f;
-    float y_key_offset = 0.f;
-    float key_speed = 0.001f;
-
-    glm::vec3 m_rect_pos, m_rect_size;
-    glm::vec3 m_rect_pos2, m_rect_size2;
-    glm::vec3 m_rect_pos3, m_rect_size3;
-
-    glm::vec3 m_rect_rotation;
-    glm::vec3 m_rect_rotation2;
-    glm::vec3 m_rect_rotation3;
-
+    std::unordered_map<std::string, Object> m_objects;
 
 public:
+
+    // ---------------------------------------------
     core::WindowProperties GetWindowProperties()
     {
         core::WindowProperties props;
@@ -59,73 +156,89 @@ public:
         return props;
     }
 
+    // ---------------------------------------------
     void Initialize() override
     {
         TONIC_TRACE("Editor: Initialize()");
         
-        // Test mesh
-        float vertices[]
-        {
-              0.5f,  0.5f,  0.f,  // up-right
-             -0.5f,  0.5f,  0.f,  // down-right
-             -0.5f, -0.5f,  0.f,  // down-left
-              0.5f, -0.5f,  0.f   // up-left
+        float texcoords[] = {
+            1.f, 1.f,
+            1.f, 0.f,
+            0.f, 0.f,
+            0.f, 1.f
         };
-
-        uint32_t elements[]
-        {
-            0,3,1,
-            1,3,2
-        };
-
-        m_mesh = std::make_shared<graphics::Mesh> (vertices, 4, 3, &elements[0], 6);
-        m_mesh2 = std::make_shared<graphics::Mesh>(vertices, 4, 3, &elements[0], 6);
-        m_mesh3 = std::make_shared<graphics::Mesh>(vertices, 4, 3, &elements[0], 6);
-
 
         // Test shader
         const char* vertex_shader = R"(
                 #version 410 core
                 layout (location = 0) in vec3 position;
-                out vec3 vpos;
-                uniform vec2 offset = vec2(0.5);
+                // layout (location = 1) in vec2 tex_coords;
+                out vec4 vpos;
+                out vec2 uvs;
                 uniform mat4 model = mat4(1.0);
                 void main()
                 {
-                    vpos = position + vec3(offset, 0);
+                    // uvs = tex_coords;
+                    vpos =  model * vec4(position, 1.0);
                     gl_Position = model * vec4(position, 1.0);
                 }
             )";
 
         const char* fragment_shader = R"(
                 #version 410 core
-                in vec3 vpos;
+                in vec4 vpos;
+                in vec2 uvs; 
                 out vec4 out_color; 
                 
                 uniform vec3 color = vec3(0.0);
                 uniform float blue = 0.5f;
+                uniform vec4 light_source = vec4(0.5,0.5,-0.5, 0.0);
+                uniform sampler2D tex;
+
                 void main()
                 {
-                    out_color = vec4(vpos.xy, blue, 1.0);
+                    out_color = vec4(0.5 + (vpos.x + vpos.y - vpos.z)/3.0, 0.5 + (vpos.x + vpos.y - vpos.z)/3.0, 0.0,1.0);
+                    // out_color = texture(tex, uvs);
                 }
             )";
-        m_shader = std::make_shared<graphics::Shader>(vertex_shader, fragment_shader);
-        m_shader2 = std::make_shared<graphics::Shader>(vertex_shader, fragment_shader);
-        m_shader3 = std::make_shared<graphics::Shader>(vertex_shader, fragment_shader);
 
-        m_shader->SetUniformFloat3("color", 1, 0, 0);
-        
-        m_rect_pos  = glm::vec3(0.f);
-        m_rect_pos2 = glm::vec3(0.f);
-        m_rect_pos3 = glm::vec3(0.f);
+        // Engine::GetInstance().GetRenderManager().SetWireframeMode(true);
 
-        m_rect_size  = glm::vec3(1.f);
-        m_rect_size2 = glm::vec3(1.f);
-        m_rect_size3 = glm::vec3(1.f);
+        std::shared_ptr<graphics::Shader> shader = std::make_shared<graphics::Shader>(vertex_shader, fragment_shader);
 
-        m_rect_rotation = glm::vec3(0.f);
-        m_rect_rotation2 = glm::vec3(0.f);
-        m_rect_rotation3 = glm::vec3(0.f);
+        m_objects["Hexahedron"] = Object("Hexahedron", std::make_shared<graphics::Mesh>(
+            assets::mesh_cells::hexahedron::vertices,
+            assets::mesh_cells::hexahedron::vertex_count, 3,
+            assets::mesh_cells::hexahedron::elements,
+            assets::mesh_cells::hexahedron::element_count), shader);
+        m_objects["Hexahedron"].SetState(Object::State::Active);
+
+        m_objects["Tetrahedron"] = Object("Tetrahedron", std::make_shared<graphics::Mesh>(
+            assets::mesh_cells::tetrahedron::vertices,
+            assets::mesh_cells::tetrahedron::vertex_count, 3,
+            assets::mesh_cells::tetrahedron::elements,
+            assets::mesh_cells::tetrahedron::element_count), shader);
+
+        m_objects["Pyramid"] = Object("Pyramid", std::make_shared<graphics::Mesh>(
+            assets::mesh_cells::pyramid::vertices,
+            assets::mesh_cells::pyramid::vertex_count, 3,
+            assets::mesh_cells::pyramid::elements,
+            assets::mesh_cells::pyramid::element_count), shader);
+
+        m_objects["Triangular prism"] = Object("Triangular prism", std::make_shared<graphics::Mesh>(
+            assets::mesh_cells::triangular_prism::vertices,
+            assets::mesh_cells::triangular_prism::vertex_count, 3,
+            assets::mesh_cells::triangular_prism::elements,
+            assets::mesh_cells::triangular_prism::element_count), shader);
+
+        m_objects["Triangle"] = Object("Triangle", std::make_shared<graphics::Mesh>(
+            assets::mesh_cells::triangle::vertices,
+            assets::mesh_cells::triangle::vertex_count, 3,
+            assets::mesh_cells::triangle::elements,
+            assets::mesh_cells::triangle::element_count), shader);
+
+        // Texture
+        // m_texture = std::make_shared<graphics::Texture>("post_build_copy/res/ammo_crate.png");
     }
 
     void Shutdown() override
@@ -140,50 +253,22 @@ public:
         float x_norm = (float)input::Mouse::X() / window_size.x;
         float y_norm = (float)(window_size.y - input::Mouse::Y()) / window_size.y;
 
-        m_shader->SetUniformFloat2("offset", x_norm + x_key_offset, y_norm + y_key_offset);
-       
-        glm::mat4 model = glm::mat4(1.f);
-        model = glm::translate(model, {m_rect_pos.x, m_rect_pos.y, m_rect_pos.z});
-        model = glm::rotate(model, m_rect_rotation.x, {1,0,0});
-        model = glm::rotate(model, m_rect_rotation.y, {0,1,0});
-        model = glm::rotate(model, m_rect_rotation.z, {0,0,1});
-        model = glm::scale(model, { m_rect_size.x, m_rect_size.y, m_rect_size.z });
+        for (auto& [name, obj] : m_objects)
+        {
+            if (obj.GetState() == Object::State::Active)
+            {
+                if (input::Mouse::HoldingButton(TONIC_M_BUTTON_LEFT))
+                    obj.SetRotationMomentum(glm::vec3(-input::Mouse::YDelta(), -input::Mouse::XDelta(), 0.f) / 500.f);
 
-        m_shader->SetUniformMat4("model", model);
-
-        glm::mat4 model2 = glm::mat4(1.f);
-        model2 = glm::translate(model2, { m_rect_pos2.x, m_rect_pos2.y, m_rect_pos2.z });
-        model2 = glm::rotate   (model2, m_rect_rotation2.x, { 1,0,0 });
-        model2 = glm::rotate   (model2, m_rect_rotation2.y, { 0,1,0 });
-        model2 = glm::rotate   (model2, m_rect_rotation2.z, { 0,0,1 });
-        model2 = glm::scale    (model2, { m_rect_size2.x, m_rect_size2.y, m_rect_size3.z});
-
-        m_shader2->SetUniformMat4("model", model2);
-
-
-        glm::mat4 model3 = glm::mat4(1.f);
-        model3 = glm::translate(model3, { m_rect_pos3.x, m_rect_pos3.y, m_rect_pos3.z });
-        model3 = glm::rotate   (model3, m_rect_rotation3.x, { 1,0,0 });
-        model3 = glm::rotate   (model3, m_rect_rotation3.y, { 0,1,0 });
-        model3 = glm::rotate   (model3, m_rect_rotation3.z, { 0,0,1 });
-        model3 = glm::scale    (model3, { m_rect_size3.x, m_rect_size3.y, m_rect_size3.z });
-
-        m_shader3->SetUniformMat4("model", model3);
-
-
+            }
+            obj.Update();
+        }
     }
 
     void Render() override
     {
-        auto rc = std::make_unique<graphics::RENDER_COMMANDS::RenderMesh>(m_mesh, m_shader);
-        auto rc2 = std::make_unique<graphics::RENDER_COMMANDS::RenderMesh>(m_mesh2, m_shader2);
-        auto rc3 = std::make_unique<graphics::RENDER_COMMANDS::RenderMesh>(m_mesh3, m_shader3);
-
- 
-        Engine::GetInstance().GetRenderManager().Submit(std::move(rc));
-        Engine::GetInstance().GetRenderManager().Submit(std::move(rc2));
-        Engine::GetInstance().GetRenderManager().Submit(std::move(rc3));
-
+        for (auto& [name, obj] : m_objects)
+            obj.Render();
  
         Engine::GetInstance().GetRenderManager().Flush();
     }
@@ -192,33 +277,9 @@ public:
     {
         ImGui::DockSpaceOverViewport(ImGui::GetMainViewport());
 
-        if (ImGui::Begin("Rect Pos"))
-        {
-            ImGui::DragFloat3("Rect1",glm::value_ptr(m_rect_pos), 0.01f);
-            ImGui::DragFloat3("Rect2", glm::value_ptr(m_rect_pos2), 0.01f);
-            ImGui::DragFloat3("Rect3", glm::value_ptr(m_rect_pos3), 0.01f);
-
-        } 
-        ImGui::End();
-
-        if (ImGui::Begin("Rect Size"))
-        {
-            ImGui::DragFloat3("Rect1", glm::value_ptr(m_rect_size), 0.01f);
-            ImGui::DragFloat3("Rect2", glm::value_ptr(m_rect_size2), 0.01f);
-            ImGui::DragFloat3("Rect3", glm::value_ptr(m_rect_size3), 0.01f);
-
-        }
-        ImGui::End();
-
-        if (ImGui::Begin("Rect Rotation"))
-        {
-            ImGui::DragFloat3("Rect1", glm::value_ptr(m_rect_rotation), 0.01f);
-            ImGui::DragFloat3("Rect2", glm::value_ptr(m_rect_rotation2), 0.01f);
-            ImGui::DragFloat3("Rect3", glm::value_ptr(m_rect_rotation3), 0.01f);
-
-        }
-        ImGui::End();
-
+        for (auto& [name, obj] : m_objects)
+            obj.ImguiRender();
+        
         if (ImGui::Begin("Game view"))
         {
             if (ImGui::IsWindowHovered())

@@ -5,6 +5,7 @@
 namespace tonic::graphics
 {
 	class Mesh;
+	class Texture;
 	class Shader;
 	class FrameBuffer;
 
@@ -29,6 +30,23 @@ namespace tonic::graphics
 
 		private:
 			std::weak_ptr<Mesh> m_mesh;
+			std::weak_ptr<Shader> m_shader;
+		};
+
+		class RenderMeshTextured : public RenderCommand
+		{
+		public:
+			RenderMeshTextured(std::weak_ptr<Mesh> mesh, std::weak_ptr<Texture> texture, std::weak_ptr<Shader> shader)
+				: m_mesh(mesh)
+				, m_texture(texture)
+				, m_shader(shader)
+			{}
+
+			virtual void Execute() override;
+
+		private:
+			std::weak_ptr<Mesh> m_mesh;
+			std::weak_ptr<Texture> m_texture;
 			std::weak_ptr<Shader> m_shader;
 		};
 

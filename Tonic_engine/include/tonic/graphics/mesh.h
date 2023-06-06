@@ -7,9 +7,10 @@ namespace tonic::graphics
 	class Mesh
 	{
 	public:
-		Mesh(float* vertex_array, uint32_t vertex_count, uint32_t dimensions);
-		Mesh(float* vertex_array, uint32_t vertex_count, uint32_t dimensions, 
-								  uint32_t* element_arr, uint32_t element_count);
+		Mesh(const float* vertex_array, uint32_t vertex_count, uint32_t dimensions);
+		Mesh(const float* vertex_array, uint32_t vertex_count, uint32_t dimensions, const uint32_t* element_array, uint32_t element_count);
+		Mesh(const float* vertex_array, uint32_t vertex_count, uint32_t dimensions, const float* texture_coordinates, const uint32_t* element_array, uint32_t element_count);
+
 
 		~Mesh();
 
@@ -23,5 +24,6 @@ namespace tonic::graphics
 		uint32_t m_vertex_count, m_element_count;
 		uint32_t m_VAO, m_EBO;
 		uint32_t m_position_VBO;
+		uint32_t m_tex_coords_VBO;
 	};
 }

@@ -52,10 +52,10 @@ namespace factory
     static const char* BALL_FRAGMENT_SHADER = R"(
                 #version 410 core
                 out vec4 out_color; 
-                in vec3 pos;
+                in vec3 center_pos;
                 void main()
                 {
-                    if (length(pos) > 0.5) discard;
+                    if (length(center_pos) > 0.5) discard;
                     out_color = vec4(1.0);
                 }
             )";
