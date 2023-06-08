@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tonic/graphics/mesh.h"
+#include "tonic/graphics/vertex.h"
 #include "tonic/graphics/shader.h"
 
 #include "external/glm/glm.hpp"
@@ -10,8 +10,8 @@
 class Gameobject
 {
 public:
-	Gameobject(std::shared_ptr<tonic::graphics::Mesh> mesh, std::shared_ptr<tonic::graphics::Shader> shader, const glm::vec2& pos, const glm::vec2& size)
-		: m_mesh(mesh)
+	Gameobject(std::shared_ptr<tonic::graphics::VertexArray> va, std::shared_ptr<tonic::graphics::Shader> shader, const glm::vec2& pos, const glm::vec2& size)
+		: m_VA(va)
 		, m_shader(shader)
 		, m_pos(pos)
 		, m_size(size)
@@ -27,7 +27,7 @@ public:
 	void Render();
 
 private:
-	std::shared_ptr<tonic::graphics::Mesh> m_mesh;
+	std::shared_ptr<tonic::graphics::VertexArray> m_VA;
 	std::shared_ptr<tonic::graphics::Shader> m_shader;
 
 	glm::vec2 m_pos;

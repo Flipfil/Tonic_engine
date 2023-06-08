@@ -13,5 +13,5 @@ void Gameobject::Render()
 	model = glm::translate(model, {m_pos.x, m_pos.y, 0.f});
 	model = glm::scale(model, { m_size.x, m_size.y, 0.f });
 	m_shader->SetUniformMat4("model", model);
-	tonic::Engine::GetInstance().GetRenderManager().Submit(TONIC_SUBMIT_RENDER_CMD(RenderMesh, m_mesh, m_shader));
+	tonic::Engine::GetInstance().GetRenderManager().Submit(TONIC_SUBMIT_RENDER_CMD(RenderVertexArray, m_VA, m_shader));
 }

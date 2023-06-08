@@ -1,6 +1,6 @@
 #pragma once
 
-#include "tonic/graphics/mesh.h"
+#include "tonic/graphics/vertex.h"
 #include "tonic/graphics/shader.h"
 
 #include "Gameobjects/game_object.h"
@@ -13,15 +13,13 @@
 
 namespace factory
 {
-    static float VERTICES[]
-    {
-          0.5f,  0.5f,  0.f,  // up-right
-         -0.5f,  0.5f,  0.f,  // down-right
-         -0.5f, -0.5f,  0.f,  // down-left
-          0.5f, -0.5f,  0.f   // up-left
-    };
+    static std::vector<float> VERTEX_0 = {  0.5f,  0.5f,  0.f }; // up-right
+    static std::vector<float> VERTEX_1 = { -0.5f,  0.5f,  0.f };  // down-right
+    static std::vector<float> VERTEX_2 = { -0.5f, -0.5f,  0.f };  // down-left
+    static std::vector<float> VERTEX_3 = {  0.5f, -0.5f,  0.f };   // up-left
+    
 
-    static uint32_t ELEMENTS[]
+    static std::vector<uint32_t> ELEMENTS
     {
         0,3,1,
         1,3,2
@@ -52,31 +50,52 @@ namespace factory
     static const char* BALL_FRAGMENT_SHADER = R"(
                 #version 410 core
                 out vec4 out_color; 
-                in vec3 center_pos;
+                in vec3 pos;
                 void main()
                 {
-                    if (length(center_pos) > 0.5) discard;
+                    if (length(pos) > 0.5) discard;
                     out_color = vec4(1.0);
                 }
             )";
     
     std::shared_ptr<Gameobject> CreatePaddle(const glm::vec2& pos)
     {
-        std::shared_ptr<tonic::graphics::Mesh> mesh = std::make_shared<tonic::graphics::Mesh>(VERTICES, 4, 3, ELEMENTS, 6);
+        TONIC_CREATE_VERTEX_BUFFER(vb, float);
+        vb->PushVertex(VERTEX_0);
+        vb->PushVertex(VERTEX_1);
+        vb->PushVertex(VERTEX_2);
+        vb->PushVertex(VERTEX_3);
+        vb->SetLayout({ 3 });
+
+        std::shared_ptr<tonic::graphics::VertexArray> va = std::make_shared<tonic::graphics::VertexArray>();
+        va->PushBuffer(std::move(vb));
+        va->SetElements(ELEMENTS);
+        va->Upload();
+
         std::shared_ptr<tonic::graphics::Shader> shader = std::make_shared<tonic::graphics::Shader>(VERTEX_SHADER, BALL_FRAGMENT_SHADER);
         
         glm::vec2 size{ 0.1, 0.3 };
-
-        return std::make_shared<Gameobject>(mesh, shader, pos, size);
+        return std::make_shared<Gameobject>(va, shader, pos, size);
     }
 
     std::shared_ptr<Ball> CreateBall(const glm::vec2& pos)
     {
-        std::shared_ptr<tonic::graphics::Mesh> mesh = std::make_shared<tonic::graphics::Mesh>(VERTICES, 4, 3, ELEMENTS, 6);
+        TONIC_CREATE_VERTEX_BUFFER(vb, float);
+        vb->PushVertex(VERTEX_0);
+        vb->PushVertex(VERTEX_1);
+        vb->PushVertex(VERTEX_2);
+        vb->PushVertex(VERTEX_3);
+        vb->SetLayout({ 3 });
+
+        std::shared_ptr<tonic::graphics::VertexArray> va = std::make_shared<tonic::graphics::VertexArray>();
+        va->PushBuffer(std::move(vb));
+        va->SetElements(ELEMENTS);
+        va->Upload();
+
         std::shared_ptr<tonic::graphics::Shader> shader = std::make_shared<tonic::graphics::Shader>(VERTEX_SHADER, BALL_FRAGMENT_SHADER);
 
         glm::vec2 size{ 0.1, 0.1 };
 
-        return std::make_shared<Ball>(mesh, shader, pos, size);
+        return std::make_shared<Ball>(va, shader, pos, size);
     }
 }

@@ -1,6 +1,6 @@
 #include "tonic/graphics/render_commands.h"
 
-#include "tonic/graphics/mesh.h"
+#include "tonic/graphics/vertex.h"
 #include "tonic/graphics/texture.h"
 #include "tonic/graphics/shader.h"
 #include "tonic/graphics/frame_buffer.h"
@@ -13,63 +13,68 @@
 
 namespace tonic::graphics::RENDER_COMMANDS
 {
-	void RenderMesh::Execute()
+	void RenderVertexArray::Execute()
 	{
-		std::shared_ptr<Mesh> mesh = m_mesh.lock();
+		std::shared_ptr<VertexArray> vertex_array = m_vertex_array.lock();
 		std::shared_ptr<Shader> shader = m_shader.lock();
-		if (mesh && shader)
+		if (!vertex_array || !shader)
 		{
-			mesh->Bind();
-			shader->Bind();
+			TONIC_WARN("Attempting to execute RenderVertexArray with invalid data");
+			return;
+		}
 
-			if (mesh->GetElementCount() > 0)
-			{
-				glDrawElements(GL_TRIANGLES, mesh->GetElementCount(), GL_UNSIGNED_INT, 0); TONIC_CHECK_GL_ERROR;
-			}
-			else
-			{
-				glDrawArrays(GL_TRIANGLE_STRIP, 0, mesh->GetVertexCount()); TONIC_CHECK_GL_ERROR;
-			}
+		TONIC_ASSERT(vertex_array->IsValid(), "Attempting to execute invalid RenderVertexArray - did you forget to call VertexArray::Upload?");
+		if (!vertex_array->IsValid())
+			return;
 
+		vertex_array->Bind();
+		shader->Bind();
 
-			shader->Unbind();
-			mesh->Unbind();
+		if (vertex_array->GetElementCount() > 0)
+		{
+			glDrawElements(GL_TRIANGLES, vertex_array->GetElementCount(), GL_UNSIGNED_INT, 0); TONIC_CHECK_GL_ERROR;
 		}
 		else
 		{
-			TONIC_WARN("Attempting to execute RenderMesh with invalid data");
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, vertex_array->GetVertexCount()); TONIC_CHECK_GL_ERROR;
 		}
+
+		shader->Unbind();
+		vertex_array->Unbind();
 	}
 
-	void RenderMeshTextured::Execute()
+	void RenderVertexArrayTextured::Execute()
 	{
-		std::shared_ptr<Mesh> mesh = m_mesh.lock();
+		std::shared_ptr<VertexArray> vertex_array = m_vertex_array.lock();
 		std::shared_ptr<Texture> texture = m_texture.lock();
 		std::shared_ptr<Shader> shader = m_shader.lock();
-		if (mesh && texture && shader)
+		if (!vertex_array || !texture || !shader)
 		{
-			mesh->Bind();
-			texture->Bind();
-			shader->Bind();
+			TONIC_WARN("Attempting to execute RenderVertexArrayTextured with invalid data");
+			return;
+		}
 
-			if (mesh->GetElementCount() > 0)
-			{
-				glDrawElements(GL_TRIANGLES, mesh->GetElementCount(), GL_UNSIGNED_INT, 0); TONIC_CHECK_GL_ERROR;
-			}
-			else
-			{
-				glDrawArrays(GL_TRIANGLE_STRIP, 0, mesh->GetVertexCount()); TONIC_CHECK_GL_ERROR;
-			}
+		TONIC_ASSERT(vertex_array->IsValid(),"Attempting to execute invalid RenderVertexArrayTextured - did you forget to call VertexArray::Upload?");
+		if (!vertex_array->IsValid())
+			return;
 
+		vertex_array->Bind();
+		texture->Bind();
+		shader->Bind();
 
-			shader->Unbind();
-			texture->Unbind();
-			mesh->Unbind();
+		if (vertex_array->GetElementCount() > 0)
+		{
+			glDrawElements(GL_TRIANGLES, vertex_array->GetElementCount(), GL_UNSIGNED_INT, 0); TONIC_CHECK_GL_ERROR;
 		}
 		else
 		{
-			TONIC_WARN("Attempting to execute RenderMesh with invalid data");
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, vertex_array->GetVertexCount()); TONIC_CHECK_GL_ERROR;
 		}
+
+
+		shader->Unbind();
+		texture->Unbind();
+		vertex_array->Unbind();
 	}
 
 	void PushFrameBuffer::Execute()

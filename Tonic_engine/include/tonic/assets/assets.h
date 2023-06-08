@@ -13,10 +13,10 @@ namespace tonic::assets
         namespace triangle
         {
             constexpr uint32_t vertex_count = 3;
-            constexpr float vertices[] = {
-                 0.0f,  0.5f, 0.f, // top
-                -0.5f, -0.5f, 0.f, // left
-                 0.5f, -0.5f, 0.f  // right
+            const float vertices[] = {
+                 0.0f,  ((float)sqrt(3) / 2.f) - 1/3.f, 0.f, // top
+                -0.5f, -1/3.f, 0.f, // left
+                 0.5f, -1/3.f, 0.f  // right
             };
             constexpr uint32_t element_count = 3;
             constexpr uint32_t elements[] = {
@@ -42,17 +42,16 @@ namespace tonic::assets
         }
 
 
-
         // 3D common cell types
 
         namespace tetrahedron
         {
             constexpr uint32_t vertex_count = 4;
-            constexpr float vertices[] = {
-                 0.0f,  0.5f,  0.0f, // top
+            const float vertices[] = {
+                 0.0f,  ((float)sqrt(3) / 2.f) - 0.5f,  0.0f, // top
                 -0.5f, -0.5f,  0.5f, // front-left
                  0.5f, -0.5f,  0.5f, // front-right
-                 0.0f,  0.0f, -0.5f  // back
+                 0.0f, (float)-sqrt(3) / 2.f, -0.5f  // back
             };
             
             constexpr uint32_t element_count = 12;
@@ -68,8 +67,8 @@ namespace tonic::assets
         namespace pyramid
         {
             constexpr uint32_t vertex_count = 5;
-            constexpr float vertices[] = {
-                 0.0f,  0.5f,  0.0f,  // top
+            const float vertices[] = {
+                 0.0f,  ((float)sqrt(3) / 2.f) - 0.5f,  0.0f,  // top
                 -0.5f, -0.5f,  0.5f,  // front-left
                  0.5f, -0.5f,  0.5f,  // front-right
                  0.5f, -0.5f, -0.5f,  // back-right
@@ -90,21 +89,26 @@ namespace tonic::assets
         namespace triangular_prism
         {
             constexpr uint32_t vertex_count = 6;
-            constexpr float vertices[] = {
-                 0.0f,  0.5f,  0.5f, // front-top
+            const float vertices[] = {
+                 0.0f,  ((float)sqrt(3) / 2.f) - 1/3.f,  0.5f, // front-top
                 -0.5f, -0.5f,  0.5f, // front-left
-                 0.5f, -0.5f,  0.5f, // front- right
+                 0.5f, -0.5f,  0.5f, // front-right
 
-                 0.0f,  0.5f, -0.5f, // back-top
                  0.5f, -0.5f, -0.5f, // back-right
                 -0.5f, -0.5f, -0.5f, // back-left
+                 0.0f,  ((float)sqrt(3) / 2.f) - 0.5f, -0.5f  // back-top
             };
 
-            constexpr uint32_t element_count = 32;
+            constexpr uint32_t element_count = 28;
             constexpr uint32_t elements[] = {
-                0,1,2, // front
-                3,2,0, // left-left
-                3,5,
+                0,2,1, // front
+                0,4,5, // left-left
+                0,1,4,
+                2,3,5,
+                2,5,0,
+                1,3,4,
+                1,2,3,
+                3,4,5
             };
         }
 

@@ -6,10 +6,11 @@
 #include "tonic/input/mouse.h"
 #include "tonic/input/controller.h"
 
-#include "tonic/graphics/mesh.h"
+#include "tonic/graphics/vertex.h"
 #include "tonic/graphics/shader.h"
 #include "tonic/graphics/frame_buffer.h"
 #include "tonic/graphics/texture.h"
+#include "tonic/graphics/vertex.h"
 
 #include "tonic/assets/assets.h"
 
@@ -35,8 +36,9 @@ public:
 
     Object()
         : m_name("")
-        , m_mesh(nullptr)
+        , m_VA(nullptr)
         , m_shader(nullptr)
+        , m_texture(nullptr)
         , m_position(glm::vec3(0.f))
         , m_size(glm::vec3(1.f))
         , m_rotation(glm::vec3(0.f))
@@ -46,11 +48,11 @@ public:
     {
     }
 
-    Object(const std::string& name, std::shared_ptr<graphics::Mesh> mesh, std::shared_ptr<graphics::Shader> shader)
+    Object(const std::string& name, std::shared_ptr<graphics::VertexArray> vertex_array, std::shared_ptr<graphics::Shader> shader)
         : Object()
     {
         m_name = name;
-        m_mesh = mesh;
+        m_VA = vertex_array;
         m_shader = shader;
     }
     ~Object() {}
@@ -61,6 +63,8 @@ public:
 
     void SetRotationMomentum(const glm::vec3& rm) { m_rotation_momentum = rm; }
     void SetDrag(float drag) { m_drag = drag; }
+
+    void SetTexture(std::shared_ptr<graphics::Texture> texture) { m_texture = texture; }
 
     const glm::vec3& Position() { return m_position; }
     const glm::vec3& Size()     { return m_size; }
@@ -74,9 +78,12 @@ public:
     {
         if (m_state != State::Active)
             return;
-        
-        auto rc = std::make_unique<graphics::RENDER_COMMANDS::RenderMesh>(m_mesh, m_shader);
-        Engine::GetInstance().GetRenderManager().Submit(std::move(rc));
+
+        Engine::GetInstance().GetRenderManager().Submit(std::move(
+            m_texture 
+                ? std::make_unique<graphics::RENDER_COMMANDS::RenderVertexArrayTextured>(m_VA, m_texture, m_shader)
+                : std::make_unique<graphics::RENDER_COMMANDS::RenderVertexArray>(m_VA, m_shader)
+        ));
     }
 
     virtual void Update()
@@ -123,7 +130,7 @@ public:
 private:
     std::string m_name;
 
-    std::shared_ptr<graphics::Mesh> m_mesh;
+    std::shared_ptr<graphics::VertexArray> m_VA;
     std::shared_ptr<graphics::Shader> m_shader;
     std::shared_ptr<graphics::Texture> m_texture;
 
@@ -160,52 +167,81 @@ public:
     void Initialize() override
     {
         TONIC_TRACE("Editor: Initialize()");
-        
+
         float texcoords[] = {
             1.f, 1.f,
             1.f, 0.f,
             0.f, 0.f,
             0.f, 1.f
         };
-
         // Test shader
         const char* vertex_shader = R"(
                 #version 410 core
+
                 layout (location = 0) in vec3 position;
-                // layout (location = 1) in vec2 tex_coords;
+                layout (location = 1) in vec3 color;
+                layout (location = 2) in vec2 tex_coords;
+
                 out vec4 vpos;
+                out vec3 col;
                 out vec2 uvs;
+
                 uniform mat4 model = mat4(1.0);
+
                 void main()
                 {
-                    // uvs = tex_coords;
-                    vpos =  model * vec4(position, 1.0);
+                    col = color;
+                    uvs = tex_coords;
+                    vpos        = model * vec4(position, 1.0);
                     gl_Position = model * vec4(position, 1.0);
                 }
             )";
 
         const char* fragment_shader = R"(
                 #version 410 core
+
                 in vec4 vpos;
+                in vec3 col;
                 in vec2 uvs; 
+
                 out vec4 out_color; 
-                
-                uniform vec3 color = vec3(0.0);
-                uniform float blue = 0.5f;
-                uniform vec4 light_source = vec4(0.5,0.5,-0.5, 0.0);
+
                 uniform sampler2D tex;
 
                 void main()
                 {
-                    out_color = vec4(0.5 + (vpos.x + vpos.y - vpos.z)/3.0, 0.5 + (vpos.x + vpos.y - vpos.z)/3.0, 0.0,1.0);
-                    // out_color = texture(tex, uvs);
+                    // out_color = vec4(0.5 + (vpos.x + vpos.y - vpos.z)/3.0, 0.5 + (vpos.x + vpos.y - vpos.z)/3.0, 0.0,1.0);
+                    out_color = texture(tex, uvs) + vec4(col, 1.0);
                 }
             )";
 
         // Engine::GetInstance().GetRenderManager().SetWireframeMode(true);
-
         std::shared_ptr<graphics::Shader> shader = std::make_shared<graphics::Shader>(vertex_shader, fragment_shader);
+        
+        TONIC_CREATE_VERTEX_BUFFER(vb_v, float);
+        vb_v->PushVertex({ -0.5f,  0.5f, 0.f, 1.f, 1.f, 1.f });
+        vb_v->PushVertex({ -0.5f, -0.5f, 0.f, 1.f, 0.f, 1.f });
+        vb_v->PushVertex({  0.5f, -0.5f, 0.f, 0.f, 0.f, 0.f });
+        vb_v->PushVertex({  0.5f,  0.5f, 0.f, 0.f, 1.f, 1.f });
+        vb_v->SetLayout({ 3, 3 });
 
+        TONIC_CREATE_VERTEX_BUFFER(vb_t, short);
+        vb_t->PushVertex({0,1});
+        vb_t->PushVertex({0,0});
+        vb_t->PushVertex({1,0});
+        vb_t->PushVertex({1,1});
+        vb_t->SetLayout({ 2 });
+
+
+        std::shared_ptr<graphics::VertexArray> VA = std::make_shared<graphics::VertexArray>();
+        VA->PushBuffer(std::move(vb_v));
+        VA->PushBuffer(std::move(vb_t));
+        VA->SetElements({ 0,3,1,1,3,2 });
+        VA->Upload();
+        
+        m_objects["Rectangle"] = Object("Rectangle", VA, shader);
+        m_objects["Rectangle"].SetTexture(std::make_shared<graphics::Texture>("post_build_copy/res/ammo_crate.png"));
+        /*
         m_objects["Hexahedron"] = Object("Hexahedron", std::make_shared<graphics::Mesh>(
             assets::mesh_cells::hexahedron::vertices,
             assets::mesh_cells::hexahedron::vertex_count, 3,
@@ -236,6 +272,7 @@ public:
             assets::mesh_cells::triangle::vertex_count, 3,
             assets::mesh_cells::triangle::elements,
             assets::mesh_cells::triangle::element_count), shader);
+            */
 
         // Texture
         // m_texture = std::make_shared<graphics::Texture>("post_build_copy/res/ammo_crate.png");
