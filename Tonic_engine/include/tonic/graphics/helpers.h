@@ -12,5 +12,5 @@ namespace tonic::graphics
 #ifdef TONIC_CONFIG_DEBUG
 #define TONIC_CHECK_GL_ERROR tonic::graphics::CheckGLError();
 #else
-#define TONIC_CHECK_CL_ERROR (void)0
+#define TONIC_CHECK_GL_ERROR (void)0
 #endif

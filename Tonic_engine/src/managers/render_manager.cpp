@@ -23,6 +23,11 @@ namespace tonic::managers
 
 		glEnable(GL_BLEND); TONIC_CHECK_GL_ERROR; // allows transparency
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); TONIC_CHECK_GL_ERROR;
+	
+		SetClearColor({
+			0x10 / (float)0xFF,
+			0x1D / (float)0xFF,
+			0x6B / (float)0xFF, 1.f });
 	}
 
 	void RenderManager::Shutdown()
@@ -31,9 +36,9 @@ namespace tonic::managers
 			m_render_commands.pop();
 	}
 
-	void RenderManager::SetClearColor(float r, float g, float b, float alpha)
+	void RenderManager::SetClearColor(const glm::vec4 clear_color)
 	{
-		glClearColor(r,g,b,alpha); TONIC_CHECK_GL_ERROR;
+		glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a); TONIC_CHECK_GL_ERROR;
 	}
 
 	void RenderManager::Submit(std::unique_ptr<graphics::RENDER_COMMANDS::RenderCommand> rc)
@@ -52,9 +57,9 @@ namespace tonic::managers
 		}
 	}
 
-	void RenderManager::SetViewPort(int x, int y, int w, int h)
+	void RenderManager::SetViewPort(const glm::ivec4 dimensions)
 	{
-		glViewport(x, y, w, h); TONIC_CHECK_GL_ERROR;
+		glViewport(dimensions.x, dimensions.y, dimensions.z, dimensions.w); TONIC_CHECK_GL_ERROR;
 	}
 
 	void RenderManager::Clear()
@@ -82,13 +87,10 @@ namespace tonic::managers
 	{
 		m_frame_buffers.push(fb);
 		glBindFramebuffer(GL_FRAMEBUFFER, fb->GetFBO()); TONIC_CHECK_GL_ERROR;
-		uint32_t w = 0, h = 0;
-		fb->GetSize(w, h);
-		SetViewPort(0, 0, w, h);
+		SetViewPort({ 0, 0, fb->GetSize().x, fb->GetSize().y });
 
-		float r, g, b, a;
-		fb->GetClearColor(r, g, b, a);
-		glClearColor(r, g, b, a); TONIC_CHECK_GL_ERROR;
+		auto& cc = fb->GetClearColor();
+		glClearColor(cc.r, cc.g, cc.b, cc.a); TONIC_CHECK_GL_ERROR;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); TONIC_CHECK_GL_ERROR;
 	}
 
@@ -103,17 +105,13 @@ namespace tonic::managers
 		{
 			auto next_fb = m_frame_buffers.top();
 			glBindFramebuffer(GL_FRAMEBUFFER, next_fb->GetFBO()); TONIC_CHECK_GL_ERROR;
-			uint32_t w = 0, h = 0;
-			next_fb->GetSize(w, h);
-			SetViewPort(0, 0, w, h);
+			SetViewPort({ 0, 0, next_fb->GetSize().x, next_fb->GetSize().y });
 		}
 		else
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0); TONIC_CHECK_GL_ERROR;
 			auto& window = Engine::GetInstance().GetWindow();
-			int w, h;
-			window.GetSize(w, h);
-			SetViewPort(0, 0, w, h);
+			SetViewPort({ 0, 0, window.GetSize().x, window.GetSize().y });
 		}
 	}
 }

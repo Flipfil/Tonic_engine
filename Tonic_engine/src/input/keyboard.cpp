@@ -9,7 +9,16 @@ namespace tonic::input
 	std::array<bool, Keyboard::m_key_count> Keyboard::keys_down_last;
 
 	//public
-	bool tonic::input::Keyboard::KeyHeld(int key)
+
+	bool Keyboard::PressedAnyKey()
+	{
+		for (int i = TONIC_KEY_FIRST; i <= TONIC_KEY_LAST; i++)
+			if (PressedKey(i))
+				return true;
+		return false;
+	}
+
+	bool Keyboard::HoldingKey(int key)
 	{
 		TONIC_ASSERT(key >= TONIC_KEY_FIRST && key <= TONIC_KEY_LAST, "Invalid key.");
 		if (key >= TONIC_KEY_FIRST && key <= TONIC_KEY_LAST)
@@ -17,7 +26,7 @@ namespace tonic::input
 
 		return false;
 	}
-	bool tonic::input::Keyboard::KeyPressed(int key)
+	bool Keyboard::PressedKey(int key)
 	{
 		TONIC_ASSERT(key >= TONIC_KEY_FIRST && key <= TONIC_KEY_LAST, "Invalid key.");
 		if (key >= TONIC_KEY_FIRST && key <= TONIC_KEY_LAST)
@@ -25,7 +34,7 @@ namespace tonic::input
 
 		return false;
 	}
-	bool tonic::input::Keyboard::KeyReleased(int key)
+	bool Keyboard::ReleasedKey(int key)
 	{
 		TONIC_ASSERT(key >= TONIC_KEY_FIRST && key <= TONIC_KEY_LAST, "Invalid key.");
 		if (key >= TONIC_KEY_FIRST && key <= TONIC_KEY_LAST)

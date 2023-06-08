@@ -4,7 +4,8 @@
 
 namespace tonic::graphics
 {
-	class Mesh;
+	class VertexArray;
+	class Texture;
 	class Shader;
 	class FrameBuffer;
 
@@ -17,19 +18,33 @@ namespace tonic::graphics
 			virtual ~RenderCommand() {}
 		};
 
-		class RenderMesh : public RenderCommand
+		class RenderVertexArray : public RenderCommand
 		{
 		public:
-			RenderMesh(std::weak_ptr<Mesh> mesh, std::weak_ptr<Shader> shader)
-				: m_mesh(mesh)
+			RenderVertexArray(std::weak_ptr<VertexArray> vertex_array, std::weak_ptr<Shader> shader)
+				: m_vertex_array(vertex_array)
 				, m_shader(shader)
 			{}
 
 			virtual void Execute() override;
 
-		private:
-			std::weak_ptr<Mesh> m_mesh;
+		protected:
+			std::weak_ptr<VertexArray> m_vertex_array;
 			std::weak_ptr<Shader> m_shader;
+		};
+
+		class RenderVertexArrayTextured : public RenderVertexArray
+		{
+		public:
+			RenderVertexArrayTextured(std::weak_ptr<VertexArray> vertex_array, std::weak_ptr<Texture> texture, std::weak_ptr<Shader> shader)
+				: RenderVertexArray(vertex_array, shader)
+				, m_texture(texture)
+			{}
+
+			virtual void Execute() override;
+
+		private:
+			std::weak_ptr<Texture> m_texture;
 		};
 
 		class PushFrameBuffer : public RenderCommand

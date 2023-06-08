@@ -16,9 +16,9 @@ namespace tonic::input
 		inline static int XDelta() { return x - x_last; }
 		inline static int YDelta() { return y - y_last; }
 		
-		static bool ButtonHeld(int button);
-		static bool ButtonPressed(int button);
-		static bool ButtonReleased(int button);
+		static bool HoldingButton(int button);
+		static bool PressedButton(int button);
+		static bool ReleasedButton(int button);
 
 	public:
 		
