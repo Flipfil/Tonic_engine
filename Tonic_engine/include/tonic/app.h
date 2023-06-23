@@ -12,12 +12,13 @@ namespace tonic
 
 		virtual core::WindowProperties GetWindowProperties() { return core::WindowProperties(); }
 
-		virtual void Initialize() {}
-		virtual void Shutdown() {}
+		virtual void Initialize() {} // initialize your game
+		virtual void Shutdown() {}   // clean up after yourself
 
-		virtual void Update() {}
-		virtual void Render() {}
-		virtual void ImguiRender() {}
+		virtual void Update() {}     // update game objects
+		virtual void Render() {}     // render game objects
+
+		virtual void ImguiRender() {} // render ImGui
 
 	private:
 	};

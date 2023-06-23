@@ -165,7 +165,7 @@ public:
 				ImGui::CaptureMouseFromApp(false);
 			}
 
-			ImVec2 size = { 500,500 };
+			ImVec2 size = { 500, 500 };
 			ImVec2 uv0 = { 0,1 };
 			ImVec2 uv1 = { 1,0 };
 			ImGui::Image((void*)(intptr_t)Engine::GetInstance().GetWindow().GetFrameBuffer()->GetTextureID(), size, uv0, uv1);

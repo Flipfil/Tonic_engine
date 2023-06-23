@@ -3,15 +3,22 @@
 #include "engine.h"
 #include "app.h"
 
-// To be implemented in client app
-// The client returns a pointer to an instance of a class derived from tonic::App
-// The ownership of the returnedpointer belongs to TONIC, and will be managed as such
-// 
-// Example:
-// class ClientApp : public tonic::App {};
-// tonic::App* CreateApp() { return new ClientApp(); }
+/* CreateApp()
+* User should implement this funcion.
+* The client returns a pointer to an instance of a class derived from tonic::App
+* The ownership of the returned pointer belongs to TONIC, and will be managed as such
+* 
+* Example:
+* class ClientApp : public tonic::App 
+* {
+* };
+* 
+* tonic::App* CreateApp() { return new ClientApp(); }
+*/
 tonic::App* CreateApp();
 
+
+// Runs an app created by CreateApp function.
 int main()
 {
 	tonic::App* app = CreateApp();

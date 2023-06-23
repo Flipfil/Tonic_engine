@@ -2,6 +2,8 @@
 
 #include "tonic/graphics/helpers.h"
 
+#include <fstream>
+
 #include "glad/glad.h"
 
 namespace tonic::graphics

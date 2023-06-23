@@ -2,13 +2,22 @@
 
 #include "spdlog/spdlog.h"
 
+/* Logging macros that use spdlog as backend.
+* 
+* TONIC_[ message type ](message, message_arg1, ... );
+* 
+* Writes 'message' to stdout. Following arguments will be formatted into 
+* the message where substring "{}" is located. The number of message_args
+* and "{}" substrings should be the same. Similar to Python formatting.
+*/
+
 #define TONIC_DEFAULT_LOGGER_NAME "TONIC_logger"
 #ifdef TONIC_CONFIG_DEBUG 
 
 	#define TONIC_TRACE(...)	if(spdlog::get(TONIC_DEFAULT_LOGGER_NAME) != nullptr) {spdlog::get(TONIC_DEFAULT_LOGGER_NAME)->trace(__VA_ARGS__);}
 	#define TONIC_DEBUG(...)	if(spdlog::get(TONIC_DEFAULT_LOGGER_NAME) != nullptr) {spdlog::get(TONIC_DEFAULT_LOGGER_NAME)->debug(__VA_ARGS__);}
-	#define TONIC_INFO(...)	if(spdlog::get(TONIC_DEFAULT_LOGGER_NAME) != nullptr) {spdlog::get(TONIC_DEFAULT_LOGGER_NAME)->info(__VA_ARGS__);}
-	#define TONIC_WARN(...)	if(spdlog::get(TONIC_DEFAULT_LOGGER_NAME) != nullptr) {spdlog::get(TONIC_DEFAULT_LOGGER_NAME)->warn(__VA_ARGS__);}
+	#define TONIC_INFO(...)		if(spdlog::get(TONIC_DEFAULT_LOGGER_NAME) != nullptr) {spdlog::get(TONIC_DEFAULT_LOGGER_NAME)->info(__VA_ARGS__);}
+	#define TONIC_WARN(...)		if(spdlog::get(TONIC_DEFAULT_LOGGER_NAME) != nullptr) {spdlog::get(TONIC_DEFAULT_LOGGER_NAME)->warn(__VA_ARGS__);}
 	#define TONIC_ERROR(...)	if(spdlog::get(TONIC_DEFAULT_LOGGER_NAME) != nullptr) {spdlog::get(TONIC_DEFAULT_LOGGER_NAME)->error(__VA_ARGS__);}
 	#define TONIC_FATAL(...)	if(spdlog::get(TONIC_DEFAULT_LOGGER_NAME) != nullptr) {spdlog::get(TONIC_DEFAULT_LOGGER_NAME)->critical(__VA_ARGS__);}
 	
