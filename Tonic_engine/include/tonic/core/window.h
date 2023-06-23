@@ -2,6 +2,10 @@
 
 #include "imgui_window.h"
 
+#include "tonic/graphics/vertex.h"
+#include "tonic/graphics/frame_buffer.h"
+#include "tonic/graphics/shader.h"
+
 #include "external/glm/glm.hpp"
 
 #include <string>
@@ -24,6 +28,7 @@ namespace tonic::core
 		int width, height;
 		int width_min, height_min;
 		int flags;
+		float aspect_ratio;
 		glm::vec3 clear_color;
 		ImguiWindowProperties imgui_props;
 
@@ -40,6 +45,8 @@ namespace tonic::core
 		void Shutdown();
 		void PumpEvents();
 
+		inline void RenderToScreen(bool enable) { m_render_to_screen = enable; }
+
 		void BeginRender();
 		void EndRender();
 
@@ -50,9 +57,21 @@ namespace tonic::core
 		glm::ivec2 GetSize();
 
 	private:
+		void InitializeScreenRender();
+		void RenderToScreen();
+		void HandleResize(int width, int height);
+
+	private:
+		WindowProperties m_window_properties;
+
 		SDL_Window* m_SDL_window;
 		SDL_GLContext m_GL_context;
 		ImguiWindow m_imgui_window;
+
+		bool m_render_to_screen;
+		glm::vec2 m_frame_buffer_size;
 		std::shared_ptr<graphics::FrameBuffer> m_frame_buffer;
+		std::shared_ptr<graphics::VertexArray> m_screen_va;
+		std::shared_ptr<graphics::Shader>      m_screen_shader;
 	};
 }

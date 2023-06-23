@@ -10,6 +10,8 @@
 
 namespace tonic::managers
 {
+	//--------------------------------
+
 	void RenderManager::Initialize()
 	{
 		TONIC_INFO("OpenGL Info:\n Vendor:\t{}\n Renderer:\t{}\n Verison:\t{}",
@@ -23,12 +25,9 @@ namespace tonic::managers
 
 		glEnable(GL_BLEND); TONIC_CHECK_GL_ERROR; // allows transparency
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); TONIC_CHECK_GL_ERROR;
-	
-		SetClearColor({
-			0x10 / (float)0xFF,
-			0x1D / (float)0xFF,
-			0x6B / (float)0xFF, 1.f });
 	}
+
+	//--------------------------------
 
 	void RenderManager::Shutdown()
 	{
@@ -36,15 +35,21 @@ namespace tonic::managers
 			m_render_commands.pop();
 	}
 
+	//--------------------------------
+
 	void RenderManager::SetClearColor(const glm::vec4 clear_color)
 	{
 		glClearColor(clear_color.r, clear_color.g, clear_color.b, clear_color.a); TONIC_CHECK_GL_ERROR;
 	}
 
+	//--------------------------------
+
 	void RenderManager::Submit(std::unique_ptr<graphics::RENDER_COMMANDS::RenderCommand> rc)
 	{
 		m_render_commands.push(std::move(rc));
 	}
+
+	//--------------------------------
 
 	void RenderManager::Flush()
 	{
@@ -57,10 +62,14 @@ namespace tonic::managers
 		}
 	}
 
+	//--------------------------------
+
 	void RenderManager::SetViewPort(const glm::ivec4 dimensions)
 	{
 		glViewport(dimensions.x, dimensions.y, dimensions.z, dimensions.w); TONIC_CHECK_GL_ERROR;
 	}
+
+	//--------------------------------
 
 	void RenderManager::Clear()
 	{
@@ -70,6 +79,8 @@ namespace tonic::managers
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); TONIC_CHECK_GL_ERROR;
 	}
+
+	//--------------------------------
 
 	void RenderManager::SetWireframeMode(bool enabled)
 	{
@@ -83,8 +94,11 @@ namespace tonic::managers
 		}
 	}
 
+	//--------------------------------
+
 	void RenderManager::PushFrameBuffer(std::shared_ptr<graphics::FrameBuffer> fb)
 	{
+		TONIC_ASSERT(fb, "FrameBuffer is null.");
 		m_frame_buffers.push(fb);
 		glBindFramebuffer(GL_FRAMEBUFFER, fb->GetFBO()); TONIC_CHECK_GL_ERROR;
 		SetViewPort({ 0, 0, fb->GetSize().x, fb->GetSize().y });
@@ -93,6 +107,8 @@ namespace tonic::managers
 		glClearColor(cc.r, cc.g, cc.b, cc.a); TONIC_CHECK_GL_ERROR;
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); TONIC_CHECK_GL_ERROR;
 	}
+	
+	//--------------------------------
 
 	void RenderManager::PopFrameBuffer()
 	{
@@ -113,5 +129,24 @@ namespace tonic::managers
 			auto& window = Engine::GetInstance().GetWindow();
 			SetViewPort({ 0, 0, window.GetSize().x, window.GetSize().y });
 		}
+	}
+
+	//--------------------------------
+
+	void RenderManager::PushCamera(std::shared_ptr<graphics::Camera> camera)
+	{
+		TONIC_ASSERT(camera, "Camera is null.");
+		m_cameras.push(camera);
+	}
+
+	//--------------------------------
+
+	void RenderManager::PopCamera()
+	{
+		TONIC_ASSERT(!m_cameras.empty(), "RenderManager::PopCamera - empty stack.");
+		if (m_cameras.empty())
+			return;
+		
+		m_cameras.pop();
 	}
 }

@@ -8,6 +8,8 @@
 
 namespace tonic::managers
 {
+	//--------------------------------
+
 	void LogManager::Initialize()
 	{
 		auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
@@ -20,6 +22,7 @@ namespace tonic::managers
 		spdlog::register_logger(logger);
 	}
 
+	//--------------------------------
 
 	void LogManager::Shutdown()
 	{

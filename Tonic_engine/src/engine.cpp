@@ -2,6 +2,8 @@
 #include "tonic/log.h"
 #include "tonic/app.h"
 
+#include "tonic/core/time.h"
+
 #include "tonic/input/mouse.h"
 #include "tonic/input/keyboard.h"
 #include "tonic/input/controller.h"
@@ -75,6 +77,7 @@ namespace tonic
             Shutdown();
             return false;
         }
+        core::Time::Initialize();
         
         // Input
         input::Mouse::Initialize();
@@ -137,6 +140,7 @@ namespace tonic
 
     void Engine::Update()
     {
+        core::Time::Update();
         m_window.PumpEvents();
         m_app->Update();
     }

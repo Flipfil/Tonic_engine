@@ -3,6 +3,7 @@
 typedef union SDL_Event SDL_Event;
 namespace tonic::core
 {
+	// 
 	struct ImguiWindowProperties
 	{
 		bool MoveFromTitleBarOnly = true;

@@ -49,7 +49,7 @@ namespace tonic::graphics
 		uint32_t m_stride = 0;
 
 		std::vector<uint32_t> m_layout;
-		void* m_data = nullptr;
+		void*	 m_data = nullptr;
 		uint32_t m_size = 0;
 		uint32_t m_GL_type = 0;
 	};

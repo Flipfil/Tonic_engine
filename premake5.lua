@@ -312,3 +312,109 @@ project "Tonic_editor"
             runtime "release"
             symbols "off"
             optimize "on"
+
+project "Space_invaders"
+    location "Space_invaders"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
+    links "Tonic_engine"
+            
+    targetdir(tdir)
+    objdir(odir)
+            
+                files
+                {
+                    "%{prj.name}/src/**.h",
+                    "%{prj.name}/src/**.cpp"
+                }
+            
+                externalincludedirs
+                {
+                    "Tonic_engine/include",
+                    "%{externals.spdlog}/include"
+                }
+            
+                flags
+                {
+                    "FatalWarnings"
+                }
+                
+                postbuildcommands
+                {
+                    "python3 " .. path.getabsolute("%{prj.name}") .. "/post_build.py config=%{cfg.buildcfg} prj=%{prj.name}"
+                }
+        
+                filter {"system:windows", "configurations:*"}
+                    systemversion "latest"
+            
+                    defines
+                    {
+                        "TONIC_PLATFORM_WINDOWS"
+                    }
+            
+                    libdirs
+                    {
+                        "%{externals.SDL2}/lib"
+                    }
+            
+                    links
+                    {
+                        "SDL2",
+                        "GLAD"
+                    }
+            
+                filter {"system:macosx", "configurations:*"}
+                    xcodebuildsettings
+                    {
+                        ["MACOSX_DEPLOYMENT_TARGET"] = "10.15",
+                        ["UseModernBuildSystem"] = "NO"
+                    }
+            
+                    defines
+                    {
+                        "TONIC_PLATFORM_MAC"
+                    }
+            
+                    -- TODO: integrate MacOS SDL2.framework
+                    -- >>>>>>>>>>>>>>>>>
+                    -- abspath = path.getabsolute("%{externals.maclibs}")
+                    -- linkoptions {"-F " .. abspath}
+            
+                    --links
+                    --{
+                    --    "SDL2.framework",
+                    --    "GLAD"
+                    --}
+                    -- <<<<<<<<<<<<<<<<<<
+            
+            
+                filter {"system:linux", "configurations:*"}
+                    defines
+                    {
+                        "TONIC_PLATFORM_LINUX"
+                    }
+            
+                    links
+                    {
+                        "SDL2",
+                        "GLAD"
+                    }
+            
+                filter {"configurations:debug"}
+                    defines
+                    {
+                        "TONIC_CONFIG_DEBUG"
+                    }
+                    runtime "debug"
+                    symbols "on"
+                
+                filter {"configurations:release"}
+                    defines
+                    {
+                        "TONIC_CONFIG_RELEASE"
+                    }
+                    runtime "release"
+                    symbols "off"
+                    optimize "on"
