@@ -2,14 +2,8 @@
 
 #include <fstream>
 
-//--------------------------------
-
-void SpaceInvaders::SaveScore()
-{
-	TONIC_TRACE("SaveScore");
-}
-
-//--------------------------------
+//---------------------------------------------
+// New Game
 
 void SpaceInvaders::NewGame(int players_count)
 {
@@ -35,11 +29,16 @@ void SpaceInvaders::NewGame(int players_count)
 	for (int i = 0; i < players_count; i++)
 		m_players.push_back(CreatePlayer(colors[i], controls[i], -1 + (i + 1) * offset));
 
+	// erase temporary objects from previous game
+	m_explosions.clear();
+	m_invader_shots.clear();
+
 	m_sound_lib["start_level"]->Play();
 	Engine::GetInstance().Sleep(1.f);
 }
 
-//--------------------------------
+//---------------------------------------------
+// Next Level
 
 void SpaceInvaders::NextLevel()
 {
@@ -80,7 +79,9 @@ void SpaceInvaders::NextLevel()
 
 }
 
-//--------------------------------
+//---------------------------------------------
+// Main Menu
+
 
 void SpaceInvaders::MainMenu()
 {
@@ -103,7 +104,8 @@ void SpaceInvaders::MainMenu()
 	m_options.push_back(CreateText("Quit",      "white", { 0, -3 / 4.f }, MENU_LETTER_SIZE));
 }
 
-//--------------------------------
+//---------------------------------------------
+// Pause Menu
 
 void SpaceInvaders::PauseMenu()
 {
@@ -118,7 +120,8 @@ void SpaceInvaders::PauseMenu()
 	m_options.push_back(CreateText(     "Quit", "white", { 0, -3 / 4.f }, MENU_LETTER_SIZE));
 }
 
-//--------------------------------
+//---------------------------------------------
+// Game Over
 
 void SpaceInvaders::GameOver()
 {
@@ -146,18 +149,18 @@ void SpaceInvaders::GameOver()
 	// save score to file
 	if (score > m_high_score)
 	{
-		std::ofstream os("post_build_copy/high_score");
+		std::ofstream os("high_score");
 		if (os.is_open()) os << score;
 		else TONIC_ERROR("Can't open high score file");
 	}
 
-	if (score > m_high_score)
+	if (score > m_high_score) // yay
 	{
 		m_title = CreateText("New high score! " + ScoreToString(score), "yellow", TITLE_POS, { MENU_LETTER_SIZE.x * 0.4f, MENU_LETTER_SIZE.y});
 		m_options.push_back(CreateText("Previous high score: " + ScoreToString(m_high_score), "magenta", { 0, 0 }, { MENU_LETTER_SIZE.x * 0.4f, MENU_LETTER_SIZE.y * 0.8f }));
 		m_high_score = score;
 	}
-	else
+	else // nay
 	{
 		m_title = CreateText("Game Over: " + ScoreToString(score), "red", TITLE_POS, { MENU_LETTER_SIZE.x * 0.4f, MENU_LETTER_SIZE.y});
 		m_options.push_back(CreateText("High score: " + ScoreToString(m_high_score), "white", { 0, 0 }, { MENU_LETTER_SIZE.x * 0.4f, MENU_LETTER_SIZE.y * 0.8f }));
@@ -167,20 +170,3 @@ void SpaceInvaders::GameOver()
 	m_options.push_back(CreateText("Main Menu", "white",  { 0, -3/4.f }, MENU_LETTER_SIZE*0.8f));
 }
 
-bool SpaceInvaders::IsColliding(const glm::vec2& pos_a, const glm::vec2& size_a, const glm::vec2& pos_b, const glm::vec2& size_b)
-{
-	float left_a = pos_a.x - size_a.x / 2;
-	float right_a = pos_a.x + size_a.x / 2;
-	float top_a = pos_a.y + size_a.y / 2;
-	float bottom_a = pos_a.y - size_a.y / 2;
-
-	float left_b = pos_b.x - size_b.x / 2;
-	float right_b = pos_b.x + size_b.x / 2;
-	float top_b = pos_b.y + size_b.y / 2;
-	float bottom_b = pos_b.y - size_b.y / 2;
-
-	return (
-		left_a < right_b && right_a > left_b &&
-		top_a > bottom_b && bottom_a < top_b
-		);
-}

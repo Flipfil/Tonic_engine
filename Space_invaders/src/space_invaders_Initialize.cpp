@@ -3,8 +3,8 @@
 #include <fstream>
 
 // dirs
-#define TEXTURES_DIR  std::string("post_build_copy/res/textures")
-#define SOUNDS_DIR  std::string("post_build_copy/res/sound")
+#define TEXTURES_DIR  std::string("res/textures")
+#define SOUNDS_DIR  std::string("res/sound")
 
 
 //----------------------------------------------------
@@ -19,7 +19,7 @@ void SpaceInvaders::Initialize()
 	InitializeMaterialLib();
 	InitializeSoundLib();
 
-	std::ifstream high_score_file("post_build_copy/high_score");
+	std::ifstream high_score_file("high_score");
 	if (high_score_file.is_open())
 	{
 		if (!(high_score_file >> m_high_score))

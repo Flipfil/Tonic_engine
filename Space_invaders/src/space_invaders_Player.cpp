@@ -1,5 +1,9 @@
 #include "space_invaders.h"
 
+// These functions in tandem with Player strucure should be a class.
+// They require usage of the asset_libs and I really did not want
+//  to pass a sub_lib or stuff like that so i just made Player a struct.
+
 // Adds score to given player and updates the score_indicator.
 void SpaceInvaders::GainScore(Player& player, int amount)
 {
@@ -22,6 +26,7 @@ void SpaceInvaders::LoseLife(Player& player)
 {
 	TONIC_TRACE("LoseLife");
 	m_sound_lib["life_lost"]->Play();
+
 	// dying animation
 	std::weak_ptr<graphics::Material> old_mat = player.ship->GetMaterial();
 
@@ -43,6 +48,7 @@ void SpaceInvaders::LoseLife(Player& player)
 	player.ship->SetMaterial(old_mat);
 	player.ship->SetTexture(m_texture_lib["ship"]);
 
+	// lives update
 	player.lives--;
 	player.lives_indicator[0]->SetTexture(m_texture_lib[std::to_string(player.lives)]);
 	if (player.lives <= 0)

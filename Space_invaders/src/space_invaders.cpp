@@ -8,8 +8,10 @@ void SpaceInvaders::Update()
 	{
 
 	/* =========================  MENU LOOPS ==========================*/
-	case State::MainMenu:
+	
+	case State::MainMenu: // MAIN MENU
 
+		// selection procedure
 		if (input::Keyboard::PressedKey(TONIC_KEY_DOWN))
 		{
 			m_sound_lib["change_option"]->Play();
@@ -20,6 +22,8 @@ void SpaceInvaders::Update()
 			m_sound_lib["change_option"]->Play();
 			m_selected_option = (m_selected_option + m_options.size() - 1) % m_options.size();
 		}
+
+		// confirmation
 		if (input::Keyboard::PressedKey(TONIC_KEY_RETURN))
 		{
 			switch (m_selected_option)
@@ -30,6 +34,8 @@ void SpaceInvaders::Update()
 			default: Engine::GetInstance().Quit();
 			}
 		}
+
+		// visual selection
 		for (auto& option : m_options)
 			for (auto& letter : option)
 				letter->SetMaterial(m_material_lib["white_silhoulette"]);
@@ -39,8 +45,10 @@ void SpaceInvaders::Update()
 
 		break;
 
-		// pause menu loop 
-	case State::PauseMenu:
+		 
+	case State::PauseMenu: // PAUSE MENU
+		
+		// selection
 		if (input::Keyboard::PressedKey(TONIC_KEY_DOWN))
 		{
 			m_sound_lib["change_option"]->Play();
@@ -51,6 +59,8 @@ void SpaceInvaders::Update()
 			m_sound_lib["change_option"]->Play();
 			m_selected_option = (m_selected_option + m_options.size() - 1) % m_options.size();
 		}
+
+		// confirmation
 		if (input::Keyboard::PressedKey(TONIC_KEY_RETURN))
 		{
 			switch (m_selected_option)
@@ -60,6 +70,8 @@ void SpaceInvaders::Update()
 			default: Engine::GetInstance().Quit();
 			}
 		}
+
+		// visual
 		for (auto& option : m_options)
 			for (auto& letter : option)
 				letter->SetMaterial(m_material_lib["white_silhoulette"]);
@@ -70,6 +82,8 @@ void SpaceInvaders::Update()
 		break;
 
 	case State::GameOver:
+
+		//selection
 		if (input::Keyboard::PressedKey(TONIC_KEY_DOWN))
 		{
 			m_sound_lib["change_option"]->Play();
@@ -80,6 +94,8 @@ void SpaceInvaders::Update()
 			m_sound_lib["change_option"]->Play();
 			m_selected_option = (m_selected_option + m_options.size() - 1) % m_options.size();
 		}
+
+		// confirmation
 		if (input::Keyboard::PressedKey(TONIC_KEY_RETURN))
 		{
 			switch (m_selected_option)
@@ -89,6 +105,8 @@ void SpaceInvaders::Update()
 				case 2: MainMenu(); break;
 			}
 		}
+
+		// visual
 		for (auto& option : m_options)
 			for (auto& letter : option)
 				letter->SetMaterial(m_material_lib["white_silhoulette"]);
@@ -98,12 +116,14 @@ void SpaceInvaders::Update()
 
 		break;
 
-		/* ========================== GAME LOOP ================================ */
+
+/* ================================= GAME LOOP ======================================== */
 	case State::GameLoop:
 
+		// Pause
 		if (input::Keyboard::PressedKey(TONIC_KEY_ESCAPE)) PauseMenu();
 
-		/* PLAYERS */
+		/* -- PLAYERS -- */
 		std::vector<std::shared_ptr<Player>> live_players;
 		for (auto& i : m_players) if (i->lives > 0) live_players.push_back(i);
 
@@ -131,7 +151,7 @@ void SpaceInvaders::Update()
 				m_sound_lib["shoot"]->Play();
 			}
 
-			// break if inactive shot
+			// skip inactive shot
 			if (player->shot->GetState() != Gameobject::State::Active)
 				continue;
 
@@ -167,7 +187,7 @@ void SpaceInvaders::Update()
 		}
 
 
-		/* INVADERS */
+		/* -- INVADERS -- */
 
 		std::vector<std::shared_ptr<AnimatedObject>> live_invaders;
 		for (auto& invader : m_invaders)
@@ -197,7 +217,7 @@ void SpaceInvaders::Update()
 		{
 			float min_x = -1.f + invader->GetSize().x / 2.f;
 			float max_x =  1.f - invader->GetSize().x / 2.f;
-			float min_y = -1.f + BOTTOM_BORDER_HEIGHT + (PLAYER_SIZE.y + INVADER_SIZE.y) / 2;
+			float min_y = -1.f + BOTTOM_BORDER_HEIGHT + PLAYER_SIZE.y + (INVADER_SIZE.y / 2.f);
 
 			// deadline
 			if (invader->GetPos().y < min_y) GameOver();
@@ -213,7 +233,7 @@ void SpaceInvaders::Update()
 			}
 		}
 
-		/* INVADER SHOOTING */
+		/* -- INVADER SHOTS -- */
 		// firing
 		m_invaders_shoot_delay -= core::Time::GetElapsed();
 		if (m_invaders_shoot_delay < 0 && m_invader_shots.size() < INVADER_MAX_SHOTS)
@@ -280,7 +300,10 @@ void SpaceInvaders::Update()
 				}
 			}
 
-		/* MOTHERSHIP */
+
+		/* -- MOTHERSHIP -- */
+
+		// spawnig
 		m_mothership_spawn_delay -= core::Time::GetElapsed();
 		if (m_mothership_spawn_delay < 0 && m_mothership->GetState() == Gameobject::State::Deactivated)
 		{
@@ -292,7 +315,10 @@ void SpaceInvaders::Update()
 		// movement and collision
 		if (m_mothership->GetState() == Gameobject::State::Active)
 		{
+			// movement
 			m_mothership->Move({ MOTHERSHIP_SPEED * core::Time::GetElapsed(), 0});
+
+			// collisions with player shot
 			for (auto& player : live_players)
 				if (player->shot->GetState() == Gameobject::State::Active)
 					if (IsColliding(
@@ -303,6 +329,7 @@ void SpaceInvaders::Update()
 						m_mothership->SetState(Gameobject::State::Deactivated);
 						GainScore(*player, 10000);
 					}
+			// collision with screen
 			if (m_mothership->GetPos().x > 1 + MOTHERSHIP_SIZE.x)
 			{
 				m_mothership_spawn_delay = MOTHERSHIP_SPAWN_RATE;
@@ -310,7 +337,8 @@ void SpaceInvaders::Update()
 			}
 		}
 
-		/* HIDEOUT */
+
+		/* -- HIDEOUT -- */
 
 		// movement
 		m_hideout->Move({ m_hideout_speed * core::Time::GetElapsed(),0 });
@@ -338,8 +366,6 @@ void SpaceInvaders::Update()
 			}
 
 
-
-
 		/* EXPLOSIONS */
 
 		for (auto it = m_explosions.begin(); it != m_explosions.end();)
@@ -358,7 +384,7 @@ void SpaceInvaders::Update()
 
 //---------------------------------------------------
 
-void SpaceInvaders::Render()
+void SpaceInvaders::Render() // render everything as Gameobject checks its state and deactivated wont render
 {
 	switch (m_state)
 	{

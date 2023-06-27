@@ -172,6 +172,9 @@ std::vector<std::shared_ptr<AnimatedObject>> SpaceInvaders::CreateInvaders()
 	return invaders;
 }
 
+//-------------------------------------------------------------
+// Mothership
+
 std::shared_ptr<Gameobject> SpaceInvaders::CreateMothership()
 {
 	return std::make_shared<Gameobject>(
@@ -182,6 +185,9 @@ std::shared_ptr<Gameobject> SpaceInvaders::CreateMothership()
 		glm::vec2(0, 1 - TOP_BORDER_HEIGHT - MOTHERSHIP_SIZE.y/2),
 		Gameobject::State::Deactivated);
 }
+
+//-------------------------------------------------------------
+// Hideout
 
 std::shared_ptr<Gameobject> SpaceInvaders::CreateHideout()
 {

@@ -96,6 +96,12 @@ void SpaceInvaders::ImguiRender()
 	if (ImGui::Begin("Sounds"))
 	{
 		if (ImGui::Button("Start level")) m_sound_lib["start_level"]->Play();
+		if (ImGui::Button("Start level")) m_sound_lib["start_level"]->Play();
+		if (ImGui::Button("Start level")) m_sound_lib["start_level"]->Play();
+		if (ImGui::Button("Start level")) m_sound_lib["start_level"]->Play();
+		if (ImGui::Button("Start level")) m_sound_lib["start_level"]->Play();
+		if (ImGui::Button("Start level")) m_sound_lib["start_level"]->Play();
+
 	}
 	ImGui::End();
 }

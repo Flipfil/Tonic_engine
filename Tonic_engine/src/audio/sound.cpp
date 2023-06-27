@@ -24,7 +24,6 @@ namespace tonic::audio
 
 	void Sound::Play()
 	{
-		SDL_CloseAudioDevice(m_device_ID);
 		int status = SDL_QueueAudio(m_device_ID, m_wave_start, m_wave_lenght);
 		SDL_PauseAudioDevice(m_device_ID, 0);
 	}

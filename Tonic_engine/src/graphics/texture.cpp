@@ -39,7 +39,7 @@ namespace tonic::graphics
 		}
 
 		// generate and bind a texture
-		glGenTextures(1, &m_ID); TONIC_CHECK_GL_ERROR
+		glGenTextures(1, &m_ID); TONIC_CHECK_GL_ERROR;
 		Bind();
 
 		// tell gl the number of channels the image has

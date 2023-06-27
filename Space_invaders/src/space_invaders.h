@@ -33,8 +33,6 @@ public:
 		GameOver
 	};
 
-	
-
 private:
 	// assets
 	core::AssetLibrary<graphics::VertexArray> m_va_lib;
@@ -91,18 +89,33 @@ public:
 
 private:
 
+	// collision detection
+	bool SpaceInvaders::IsColliding(const glm::vec2& pos_a, const glm::vec2& size_a, const glm::vec2& pos_b, const glm::vec2& size_b)
+	{
+		float left_a = pos_a.x - size_a.x / 2;
+		float right_a = pos_a.x + size_a.x / 2;
+		float top_a = pos_a.y + size_a.y / 2;
+		float bottom_a = pos_a.y - size_a.y / 2;
+
+		float left_b = pos_b.x - size_b.x / 2;
+		float right_b = pos_b.x + size_b.x / 2;
+		float top_b = pos_b.y + size_b.y / 2;
+		float bottom_b = pos_b.y - size_b.y / 2;
+
+		return (
+			left_a < right_b && right_a > left_b &&
+			top_a > bottom_b && bottom_a < top_b
+			);
+	}
+
 	// Player functions - in space_invaders.cpp
 	void GainScore(Player& player, int amount);
 	void LoseLife(Player& player);
-	bool IsColliding(const glm::vec2& pos_a, const glm::vec2& size_a, const glm::vec2& pos_b, const glm::vec2& size_b);
-
-	// Game procedures
-	void GameOver();
-	void NewGame(int player_count);
+	
+	// App state changes - in space_invaders_states.cpp
 	void NextLevel();
-
-	// State changes - in space_invaders_states.cpp
-	void SaveScore();
+	void NewGame(int player_count);
+	void GameOver();
 	void MainMenu();
 	void PauseMenu();
 
