@@ -2,7 +2,7 @@
 
 #include "GameObjects/projectile.h"
 
-
+// an encapsulation of player - left as open struct. SpaceInvaders and its functions give this struct meaning
 struct Player 
 {
 	struct Controls

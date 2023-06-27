@@ -10,6 +10,9 @@
 
 #include <memory>
 
+// Encapsulates render data with virtual position and size.
+// Can render and update itself - update does nothing in Gameobject
+//  as its purpose is abstraction for child classes
 class Gameobject
 {
 public:
@@ -73,6 +76,7 @@ private:
 	State m_state;
 };
 
+// A game object with frame animation. Animation is updated via Update()
 class AnimatedObject : public Gameobject
 {
 public:

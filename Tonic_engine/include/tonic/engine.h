@@ -4,6 +4,9 @@
 #include "managers/logmanager.h"
 #include "managers/render_manager.h"
 
+
+// engine singleton
+// if you need the instance use Engine::GetInstance()
 namespace tonic
 {
 	class App;

@@ -4,6 +4,7 @@
 
 #include "tonic/core/time.h"
 
+// animated object with set trajectory
 class Projectile : public AnimatedObject
 {
 public:
