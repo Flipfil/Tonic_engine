@@ -18,6 +18,7 @@ namespace tonic
 		static Engine& GetInstance();
 
 		void Run(App* app);
+		float Sleep(float time);
 		inline void Quit() { m_is_running = false; }
 
 		inline App& GetApp() { return *m_app; }

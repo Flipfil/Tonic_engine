@@ -138,6 +138,20 @@ namespace tonic
         #endif
     }
 
+    float Engine::Sleep(float time)
+    {
+        float start_t = core::Time::GetTotal();
+        float time_to_reach = start_t + time;
+        while (core::Time::GetTotal() < time_to_reach)
+        {
+            core::Time::Update();
+            m_window.PumpEvents();
+        }
+
+        return core::Time::GetTotal() - start_t;
+    }
+
+    //===========================================
     void Engine::Update()
     {
         core::Time::Update();

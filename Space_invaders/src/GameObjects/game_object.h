@@ -27,7 +27,7 @@ public:
 		std::weak_ptr<tonic::graphics::Texture> texture,
 		const glm::vec2& size = glm::vec2(0.5f),
 		const glm::vec2& pos  = glm::vec2(0.f),
-		State state = State::Deactivated)
+		State state = State::Active)
 		: m_VA(va)
 		, m_material(material)
 		, m_texture(texture)

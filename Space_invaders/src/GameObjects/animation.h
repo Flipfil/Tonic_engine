@@ -2,11 +2,12 @@
 
 #include "game_object.h"
 
-
-class Explosion : public AnimatedObject
+// an animated object that deactivates itself at the end of animation cycle
+class Animation : public AnimatedObject
 {
 public:
 	using AnimatedObject::AnimatedObject;
+
 	void Update() override
 	{
 		if (GetState() == State::Deactivated)

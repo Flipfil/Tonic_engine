@@ -15,16 +15,6 @@ namespace tonic::core
 		m_last = SDL_GetTicks();
 	}
 
-	float Time::Sleep(float time)
-	{
-		float time_to_reach = m_total + time;
-		float start_t = m_total;
-		while (m_total < time_to_reach)
-			Update();
-
-		return m_total - start_t;
-	}
-
 	void Time::Update()
 	{
 		uint32_t now = SDL_GetTicks();
