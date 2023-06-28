@@ -328,6 +328,8 @@ void SpaceInvaders::Update()
 						player->shot->SetState(Gameobject::State::Deactivated);
 						m_mothership->SetState(Gameobject::State::Deactivated);
 						GainScore(*player, 10000);
+
+						m_mothership_spawn_delay = MOTHERSHIP_SPAWN_RATE;
 					}
 			// collision with screen
 			if (m_mothership->GetPos().x > 1 + MOTHERSHIP_SIZE.x)
