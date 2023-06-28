@@ -4,6 +4,9 @@
 #include "managers/logmanager.h"
 #include "managers/render_manager.h"
 
+
+// engine singleton
+// if you need the instance use Engine::GetInstance()
 namespace tonic
 {
 	class App;
@@ -18,6 +21,7 @@ namespace tonic
 		static Engine& GetInstance();
 
 		void Run(App* app);
+		float Sleep(float time);
 		inline void Quit() { m_is_running = false; }
 
 		inline App& GetApp() { return *m_app; }

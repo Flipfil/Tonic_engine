@@ -14,6 +14,7 @@ namespace tonic::graphics
 		inline float GetHeight() const { return m_height; }
 		inline float GetNear() const { return m_near; }
 		inline float Getfar() const { return m_far; }
+		inline void  SetViewMatrix(const glm::mat4& view_matrix) { m_view_matrix = view_matrix; }
 
 		void SetAspectRatio(float aspect_ratio); 
 		void SetHeight(float height); 
@@ -21,6 +22,7 @@ namespace tonic::graphics
 		void SetFar(float far);
 
 		void SetOrtho(float height, float near = 0.f, float far = 100.f);
+		void SetViewMatrix(const glm::vec3& pos, float rot);
 
 		const glm::mat4& GetProjectionMatrix() const { return m_projection_matrix; }
 		const glm::mat4& GetViewMatrix() const { return m_view_matrix; }

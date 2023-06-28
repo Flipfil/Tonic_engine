@@ -10,6 +10,9 @@
 
 #include <memory>
 
+// Encapsulates render data with virtual position and size.
+// Can render and update itself - update does nothing in Gameobject
+//  as its purpose is abstraction for child classes
 class Gameobject
 {
 public:
@@ -27,7 +30,7 @@ public:
 		std::weak_ptr<tonic::graphics::Texture> texture,
 		const glm::vec2& size = glm::vec2(0.5f),
 		const glm::vec2& pos  = glm::vec2(0.f),
-		State state = State::Deactivated)
+		State state = State::Active)
 		: m_VA(va)
 		, m_material(material)
 		, m_texture(texture)
@@ -73,6 +76,7 @@ private:
 	State m_state;
 };
 
+// A game object with frame animation. Animation is updated via Update()
 class AnimatedObject : public Gameobject
 {
 public:

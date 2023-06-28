@@ -33,7 +33,7 @@ namespace tonic::managers
 		void SetViewPort(const glm::ivec4 dimensions);
 		void Submit(std::unique_ptr<graphics::RENDER_COMMANDS::RenderCommand> rc);
 
-		//Exexute subitted RenderCoins in the order they were recieved.
+		//Exexute submitted RenderCoins in the order they were recieved.
 		void Flush();
 
 

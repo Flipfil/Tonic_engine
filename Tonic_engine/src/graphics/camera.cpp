@@ -6,6 +6,7 @@ namespace tonic::graphics
 {
 	Camera::Camera()
 		: m_projection_matrix(1.f)
+		, m_view_matrix(1.f)
 		, m_aspect_ratio(16.f / 9.f)
 		, m_height(1080.f)
 		, m_near(0.f)
@@ -88,5 +89,14 @@ namespace tonic::graphics
 		float half_width = m_height * m_aspect_ratio * 0.5f;
 		float half_height = m_height * 0.5f;
 		m_projection_matrix = glm::ortho(-half_width, half_width, -half_height, half_height, m_near, m_far);
+	}
+
+	void Camera::SetViewMatrix(const glm::vec3& pos, float rot)
+	{
+		glm::mat4 view = glm::mat4(1.f);
+		view = glm::translate(view, pos);
+		view = glm::rotate(view, glm::radians(rot), glm::vec3(0, 0, 1));
+		view = glm::inverse(view);
+		SetViewMatrix(view);
 	}
 }

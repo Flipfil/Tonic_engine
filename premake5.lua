@@ -101,6 +101,9 @@ project "Tonic_engine"
         symbols "off"
         optimize "on"
     
+
+-- ################# Pong ########################
+
 project "Pong"
     location "Pong"
     kind "ConsoleApp"
@@ -165,17 +168,11 @@ project "Pong"
             "TONIC_PLATFORM_MAC"
         }
 
-        -- TODO: integrate MacOS SDL2.framework
-        -- >>>>>>>>>>>>>>>>>
-        -- abspath = path.getabsolute("%{externals.maclibs}")
-        -- linkoptions {"-F " .. abspath}
-
-        --links
-        --{
-        --    "SDL2.framework",
-        --    "GLAD"
-        --}
-        -- <<<<<<<<<<<<<<<<<<
+        links
+        {
+            "SDL2.framework",
+            "GLAD"
+        }
 
 
     filter {"system:linux", "configurations:*"}
@@ -187,7 +184,8 @@ project "Pong"
         links
         {
             "SDL2",
-            "GLAD"
+            "GLAD",
+            "dl"
         }
 
     filter {"configurations:debug"}
@@ -206,6 +204,9 @@ project "Pong"
         runtime "release"
         symbols "off"
         optimize "on"
+
+
+-- ################# Tonic_editor ########################
 
 project "Tonic_editor"
     location "Tonic_editor"
@@ -240,78 +241,76 @@ project "Tonic_editor"
             "python3 " .. path.getabsolute("%{prj.name}") .. "/post_build.py config=%{cfg.buildcfg} prj=%{prj.name}"
         }
 
-        filter {"system:windows", "configurations:*"}
-            systemversion "latest"
+    filter {"system:windows", "configurations:*"}
+        systemversion "latest"
     
-            defines
-            {
-                "TONIC_PLATFORM_WINDOWS"
-            }
+        defines
+        {
+            "TONIC_PLATFORM_WINDOWS"
+        }
     
-            libdirs
-            {
-                "%{externals.SDL2}/lib"
-            }
+        libdirs
+        {
+            "%{externals.SDL2}/lib"
+        }
     
-            links
-            {
-                "SDL2",
-                "GLAD"
-            }
+        links
+        {
+            "SDL2",
+            "GLAD"
+        }
     
-        filter {"system:macosx", "configurations:*"}
-            xcodebuildsettings
-            {
-                ["MACOSX_DEPLOYMENT_TARGET"] = "10.15",
-                ["UseModernBuildSystem"] = "NO"
-            }
+    filter {"system:macosx", "configurations:*"}
+        xcodebuildsettings
+        {
+            ["MACOSX_DEPLOYMENT_TARGET"] = "10.15",
+            ["UseModernBuildSystem"] = "NO"
+        }
     
-            defines
-            {
-                "TONIC_PLATFORM_MAC"
-            }
+        defines
+        {
+            "TONIC_PLATFORM_MAC"
+        }
     
-            -- TODO: integrate MacOS SDL2.framework
-            -- >>>>>>>>>>>>>>>>>
-            -- abspath = path.getabsolute("%{externals.maclibs}")
-            -- linkoptions {"-F " .. abspath}
-    
-            --links
-            --{
-            --    "SDL2.framework",
-            --    "GLAD"
-            --}
-            -- <<<<<<<<<<<<<<<<<<
+        links
+        {
+            "SDL2.framework",
+            "GLAD"
+        }
     
     
-        filter {"system:linux", "configurations:*"}
-            defines
-            {
-                "TONIC_PLATFORM_LINUX"
-            }
+    filter {"system:linux", "configurations:*"}
+        defines
+        {
+            "TONIC_PLATFORM_LINUX"
+        }
     
-            links
-            {
-                "SDL2",
-                "GLAD"
-            }
+        links
+        {
+            "SDL2",
+            "GLAD",
+            "dl"
+        }
     
-        filter {"configurations:debug"}
-            defines
-            {
-                "TONIC_CONFIG_DEBUG"
-            }
-            runtime "debug"
-            symbols "on"
+    filter {"configurations:debug"}
+        defines
+        {
+            "TONIC_CONFIG_DEBUG"
+        }
+        runtime "debug"
+        symbols "on"
         
-        filter {"configurations:release"}
-            defines
-            {
-                "TONIC_CONFIG_RELEASE"
-            }
-            runtime "release"
-            symbols "off"
-            optimize "on"
+    filter {"configurations:release"}
+        defines
+        {
+            "TONIC_CONFIG_RELEASE"
+        }
+        runtime "release"
+        symbols "off"
+        optimize "on"
+
+
+-- ################# Space_invaders ########################
 
 project "Space_invaders"
     location "Space_invaders"
@@ -324,97 +323,92 @@ project "Space_invaders"
     targetdir(tdir)
     objdir(odir)
             
-                files
-                {
-                    "%{prj.name}/src/**.h",
-                    "%{prj.name}/src/**.cpp"
-                }
+        files
+        {
+            "%{prj.name}/src/**.h",
+            "%{prj.name}/src/**.cpp"
+        }
             
-                externalincludedirs
-                {
-                    "Tonic_engine/include",
-                    "%{externals.spdlog}/include"
-                }
+        externalincludedirs
+        {
+            "Tonic_engine/include",
+            "%{externals.spdlog}/include"
+        }
             
-                flags
-                {
-                    "FatalWarnings"
-                }
+        flags
+        {
+            "FatalWarnings"
+        }
                 
-                postbuildcommands
-                {
-                    "python3 " .. path.getabsolute("%{prj.name}") .. "/post_build.py config=%{cfg.buildcfg} prj=%{prj.name}"
-                }
+        postbuildcommands
+        {
+            "python3 " .. path.getabsolute("%{prj.name}") .. "/post_build.py config=%{cfg.buildcfg} prj=%{prj.name}"
+        }
         
-                filter {"system:windows", "configurations:*"}
-                    systemversion "latest"
+    filter {"system:windows", "configurations:*"}
+        systemversion "latest"
             
-                    defines
-                    {
-                        "TONIC_PLATFORM_WINDOWS"
-                    }
+        defines
+        {
+            "TONIC_PLATFORM_WINDOWS"
+        }
             
-                    libdirs
-                    {
-                        "%{externals.SDL2}/lib"
-                    }
+        libdirs
+        {
+            "%{externals.SDL2}/lib"
+        }
             
-                    links
-                    {
-                        "SDL2",
-                        "GLAD"
-                    }
+        links
+        {
+            "SDL2",
+            "GLAD"
+        }
             
-                filter {"system:macosx", "configurations:*"}
-                    xcodebuildsettings
-                    {
-                        ["MACOSX_DEPLOYMENT_TARGET"] = "10.15",
-                        ["UseModernBuildSystem"] = "NO"
-                    }
+    filter {"system:macosx", "configurations:*"}
+        xcodebuildsettings
+        {
+            ["MACOSX_DEPLOYMENT_TARGET"] = "10.15",
+            ["UseModernBuildSystem"] = "NO"
+        }
             
-                    defines
-                    {
-                        "TONIC_PLATFORM_MAC"
-                    }
+        defines
+        {
+            "TONIC_PLATFORM_MAC"
+        }
             
-                    -- TODO: integrate MacOS SDL2.framework
-                    -- >>>>>>>>>>>>>>>>>
-                    -- abspath = path.getabsolute("%{externals.maclibs}")
-                    -- linkoptions {"-F " .. abspath}
-            
-                    --links
-                    --{
-                    --    "SDL2.framework",
-                    --    "GLAD"
-                    --}
-                    -- <<<<<<<<<<<<<<<<<<
+        links
+        {
+            "SDL2.framework",
+            "GLAD"
+        }
             
             
-                filter {"system:linux", "configurations:*"}
-                    defines
-                    {
-                        "TONIC_PLATFORM_LINUX"
-                    }
+    filter {"system:linux", "configurations:*"}
+        defines
+        {
+            "TONIC_PLATFORM_LINUX"
+        }
             
-                    links
-                    {
-                        "SDL2",
-                        "GLAD"
-                    }
+        links
+        {
+            "SDL2",
+            "GLAD",
+            "dl"
+        }
             
-                filter {"configurations:debug"}
-                    defines
-                    {
-                        "TONIC_CONFIG_DEBUG"
-                    }
-                    runtime "debug"
-                    symbols "on"
+    filter {"configurations:debug"}
+        defines
+        {
+            "TONIC_CONFIG_DEBUG"
+        }
+        runtime "debug"
+        symbols "on"
                 
-                filter {"configurations:release"}
-                    defines
-                    {
-                        "TONIC_CONFIG_RELEASE"
-                    }
-                    runtime "release"
-                    symbols "off"
-                    optimize "on"
+    filter {"configurations:release"}
+        defines
+        {
+            "TONIC_CONFIG_RELEASE"
+        }
+        runtime "release"
+        symbols "off"
+        optimize "on"

@@ -9,11 +9,17 @@
 * The ownership of the returned pointer belongs to TONIC, and will be managed as such
 * 
 * Example:
-* class ClientApp : public tonic::App 
+* 
+* #include "tonic/app.h"
+* #include "tonic/main.h"
+* 
+* class MyGame : public tonic::App 
 * {
+*   ... implement methods ...
 * };
 * 
 * tonic::App* CreateApp() { return new ClientApp(); }
+* 
 */
 tonic::App* CreateApp();
 
