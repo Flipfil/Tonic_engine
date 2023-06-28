@@ -11,7 +11,7 @@
 #include "tonic/graphics/shader.h"
 #include "tonic/graphics/mesh.h"
 
-#include "SDL.h"
+#include "SDL2/SDL.h"
 
 
 namespace tonic

@@ -90,7 +90,7 @@ public:
 private:
 
 	// collision detection
-	bool SpaceInvaders::IsColliding(const glm::vec2& pos_a, const glm::vec2& size_a, const glm::vec2& pos_b, const glm::vec2& size_b)
+	bool IsColliding(const glm::vec2& pos_a, const glm::vec2& size_a, const glm::vec2& pos_b, const glm::vec2& size_b)
 	{
 		float left_a = pos_a.x - size_a.x / 2;
 		float right_a = pos_a.x + size_a.x / 2;

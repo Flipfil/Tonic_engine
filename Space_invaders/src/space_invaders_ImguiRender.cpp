@@ -110,4 +110,4 @@ void SpaceInvaders::ImguiRender()
 
 void SpaceInvaders::ImguiRender() {}
 
-#endif TONIC_CONFIG_DEBUG
+#endif /* TONIC_CONFIG_DEBUG */

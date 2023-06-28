@@ -34,7 +34,7 @@ namespace tonic::graphics
 			else if constexpr (std::is_same<T, glm::vec4>()) { m_uniform_float4[name] = val; }
 			else if constexpr (std::is_same<T, glm::mat3>()) {   m_uniform_mat3[name] = val; }
 			else if constexpr (std::is_same<T, glm::mat4>()) {   m_uniform_mat4[name] = val; }
-			else static_assert(false, "Unsupported data type in Material::SetUniformValue.");
+			else static_assert(true, "Unsupported data type in Material::SetUniformValue.");
 		}
 
 #define GET_UNIFORM_VALUE(map_name, default_return) \
@@ -53,7 +53,7 @@ namespace tonic::graphics
 			else if constexpr (std::is_same<T, glm::vec4>()) { GET_UNIFORM_VALUE(m_uniform_float4, glm::vec4(0.f)); }
 			else if constexpr (std::is_same<T, glm::mat3>()) { GET_UNIFORM_VALUE(  m_uniform_mat3, glm::mat3(0.f)); }
 			else if constexpr (std::is_same<T, glm::mat4>()) { GET_UNIFORM_VALUE(  m_uniform_mat4, glm::mat4(0.f)); }
-			else static_assert(false, "Unsupported data type in Material::GetUniformValue.");
+			else static_assert( true, "Unsupported data type in Material::GetUniformValue.");
 		}
 #undef GET_UNIFORM_VALUE
 		

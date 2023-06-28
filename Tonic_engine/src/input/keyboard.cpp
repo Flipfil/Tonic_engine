@@ -1,7 +1,7 @@
 #include "tonic/input/keyboard.h"
 #include "tonic/log.h"
 
-#include "SDL_keyboard.h"
+#include "SDL2/SDL_keyboard.h"
 
 namespace tonic::input
 {

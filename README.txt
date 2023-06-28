@@ -16,3 +16,9 @@ Tools description: not specifying projects applies to all existing projects
 	gensln   - generate a solution, for example *.sln for windows
 	buildsln - builds the binaries of the project
 	run      - execute the binaries
+
+Note - If you are working on Windows platform, then running the code from VisualStudio 
+	may result in incorrect file paths. The code is written as if "post_build_copy"
+	directory does not exist and VS runs the code from the project root. To avoid
+	this create a symbolic link in prj root to your files/directories from 
+	the "post_build_copy" OR run the program from the "bin" folder.

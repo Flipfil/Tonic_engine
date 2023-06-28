@@ -2,7 +2,7 @@
 
 #include "tonic/log.h"
 
-#include "SDL_Audio.h"
+#include "SDL2/SDL_Audio.h"
 
 namespace tonic::audio
 {

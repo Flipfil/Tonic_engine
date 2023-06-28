@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameObjects/projectile.h"
+#include "projectile.h"
 
 // an encapsulation of player - left as open struct. SpaceInvaders and its functions give this struct meaning
 struct Player 

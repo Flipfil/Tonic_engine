@@ -1,7 +1,7 @@
 #include "tonic/input/mouse.h"
 #include "tonic/log.h"
 
-#include "SDL_mouse.h"
+#include "SDL2/SDL_mouse.h"
 
 namespace tonic::input
 {

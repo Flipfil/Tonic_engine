@@ -187,7 +187,8 @@ project "Pong"
         links
         {
             "SDL2",
-            "GLAD"
+            "GLAD",
+            "dl"
         }
 
     filter {"configurations:debug"}
@@ -293,7 +294,8 @@ project "Tonic_editor"
             links
             {
                 "SDL2",
-                "GLAD"
+                "GLAD",
+                "dl"
             }
     
         filter {"configurations:debug"}
@@ -399,7 +401,8 @@ project "Space_invaders"
                     links
                     {
                         "SDL2",
-                        "GLAD"
+                        "GLAD",
+                        "dl"
                     }
             
                 filter {"configurations:debug"}
