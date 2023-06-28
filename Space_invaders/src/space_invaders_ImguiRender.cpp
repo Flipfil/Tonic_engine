@@ -89,19 +89,19 @@ void SpaceInvaders::ImguiRender()
 		if (ImGui::Button("Main Menu"))  MainMenu();
 		if (ImGui::Button("Pause Menu"))  PauseMenu();
 		if (ImGui::Button("Game Over"))  GameOver();
-		if (ImGui::Button("Save Score")) GameOver();
 	}
 	ImGui::End();
 
 	if (ImGui::Begin("Sounds"))
 	{
 		if (ImGui::Button("Start level")) m_sound_lib["start_level"]->Play();
-		if (ImGui::Button("Start level")) m_sound_lib["start_level"]->Play();
-		if (ImGui::Button("Start level")) m_sound_lib["start_level"]->Play();
-		if (ImGui::Button("Start level")) m_sound_lib["start_level"]->Play();
-		if (ImGui::Button("Start level")) m_sound_lib["start_level"]->Play();
-		if (ImGui::Button("Start level")) m_sound_lib["start_level"]->Play();
-
+		if (ImGui::Button("Change option")) m_sound_lib["change_option"]->Play();
+		if (ImGui::Button("Invader Explosion")) m_sound_lib["invader_explosion"]->Play();
+		if (ImGui::Button("Invader Move")) m_sound_lib["invader_move"]->Play();
+		if (ImGui::Button("Life Lost")) m_sound_lib["life_lost"]->Play();
+		if (ImGui::Button("Mothership Spawn")) m_sound_lib["mothership_spawn"]->Play();
+		if (ImGui::Button("Shoot")) m_sound_lib["shoot"]->Play();
+		if (ImGui::Button("Game Over")) m_sound_lib["game_over"]->Play();
 	}
 	ImGui::End();
 }
