@@ -9,7 +9,7 @@ arguments as names of the other scripted tools in the tools dir. It also has
 support for flags specifying release/debug configuration or exact project the
 command is meant to target. Commands can be chained.
 
-Following example command generates a platfrom solution for the Pong project and runs Tonic_editor
+Following example generates a platfrom solution for the Pong project and runs Tonic_editor
 python3 ./cli.py gensln -prj=Pong run -prj=Tonic_editor
 
 Tools description: not specifying projects applies to all existing projects
