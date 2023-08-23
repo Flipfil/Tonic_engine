@@ -1,21 +1,26 @@
-This is my attempt at a crossplatform game engine and a game 
-collection built using this engine. I wanted to make this for a long time and
-thanks to Warhorse Studios I finally had the motivation.
+This is my attempt at a crossplatform game engine + my game collection using this engine.
 
-As core build tool I chose premake5 because of its compactness over CMake. Also
-CMake seemed a little too challenging to learn without help. The other building 
-tools arevery simple python scripts with one core script "cli.py". Run this script with
-arguments as names of the other scripted tools in the tools dir. It also has 
-support for flags specifying release/debug configuration or exact project the
-command is meant to target. Commands can be chained.
+=============================================================================================
+BUILDING PROJECTS
+=============================================================================================
+As core build tool I chose premake5 over CMake because of its simplicity. The other building 
+tools are very simple python scripts with one core script "cli.py". Run the core script with
+arguments as names of the other scripts in the tools dir (without ".py"). It also supports flags 
+specifying release/debug version or target project. Commands can be chained.
 
-Following example generates a platfrom solution for the Pong project and runs Tonic_editor
+Following example generates a platfrom solution for the Pong project and runs Tonic_editor:
 python3 ./cli.py gensln -prj=Pong run -prj=Tonic_editor
 
-Tools description: not specifying projects applies to all existing projects
+Tools: 
 	gensln   - generate a solution, for example *.sln for windows
 	buildsln - builds the binaries of the project
 	run      - execute the binaries
+Flags:
+	-prj=[PROJECT NAME]	- command targets specified project. Default applies to all projects - current working projects: Pong, SpaceInvaders, Tonic_editor, Tonic_engine (is just a .lib - cannot be run)
+	-config=[CONFIGURATION]	- to which configuration of a project/s is command applied to. Default is "debug" other option is "release".
+
+How to build a project from source:
+python3 ./cli.py gensln buildsln -prj=[PROJECT NAME]
 
 Note - If you are working on Windows platform, then running the code from VisualStudio 
 	may result in incorrect file paths. The code is written as if "post_build_copy"
